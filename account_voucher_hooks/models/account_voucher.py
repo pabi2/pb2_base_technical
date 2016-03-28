@@ -13,9 +13,26 @@ class AccountVoucher(models.Model):
 
     @api.model
     def multiple_reconcile_ded_amount_hook(self, line_total,
-                                           move_id, name,
+                                           move_id, account_id, diff, name,
                                            company_currency, current_currency):
-        return []
+        move_lines = []
+        sign = self.type == 'payment' and -1 or 1
+        move_line = {
+            'name': name,
+            'account_id': account_id,
+            'move_id': move_id,
+            'partner_id': self.partner_id.id,
+            'date': self.date,
+            'credit': diff > 0 and diff or 0.0,
+            'debit': diff < 0 and -diff or 0.0,
+            'amount_currency': company_currency != current_currency and
+            (sign * -1 * self.writeoff_amount) or False,
+            'currency_id': company_currency != current_currency and
+            current_currency or False,
+        }
+        move_lines.append(move_line)
+
+        return move_lines
 
     @api.multi
     def writeoff_move_line_get(self, line_total,
@@ -26,10 +43,10 @@ class AccountVoucher(models.Model):
             voucher_brw.journal_id.company_id.currency_id
         list_move_line = []
         ded_amount = 0.00
+        write_off_name = ''
         if not current_currency_obj.is_zero(line_total):
             diff = line_total
             account_id = False
-            write_off_name = ''
             if voucher_brw.payment_option == 'with_writeoff':
                 account_id = voucher_brw.writeoff_acc_id.id
                 write_off_name = voucher_brw.comment
@@ -45,27 +62,12 @@ class AccountVoucher(models.Model):
                                                  name, company_currency,
                                                  current_currency)
             list_move_line.extend(reconcile_move_lines)
-            if not voucher_brw.multiple_reconcile_ids:
-                sign = voucher_brw.type == 'payment' and -1 or 1
-                move_line = {
-                    'name': write_off_name or name,
-                    'account_id': account_id,
-                    'move_id': move_id,
-                    'partner_id': voucher_brw.partner_id.id,
-                    'date': voucher_brw.date,
-                    'credit': diff > 0 and diff or 0.0,
-                    'debit': diff < 0 and -diff or 0.0,
-                    'amount_currency': company_currency != current_currency and
-                    (sign * -1 * voucher_brw.writeoff_amount) or False,
-                    'currency_id': company_currency != current_currency and
-                    current_currency or False,
-                }
-                list_move_line.append(move_line)
-            elif voucher_brw.multiple_reconcile_ids and diff != ded_amount:
-                reconcile_lines = self.multiple_reconcile_ded_amount_hook(
-                    line_total, move_id, name,
+            name = write_off_name and write_off_name or name
+
+            move_lines = self.multiple_reconcile_ded_amount_hook(
+                    line_total, move_id, account_id, diff, ded_amount, name,
                     company_currency, current_currency)
-                list_move_line.extend(reconcile_lines)
+            list_move_line.extend(move_lines)
             return list_move_line
 
     @api.model
@@ -74,6 +76,8 @@ class AccountVoucher(models.Model):
 
     @api.model
     def action_move_line_writeoff_hook(self, ml_writeoff):
+        if ml_writeoff:
+            self.env['account.move.line'].create(ml_writeoff[0])
         return
 
     @api.multi
@@ -113,11 +117,7 @@ class AccountVoucher(models.Model):
                 line_total, move_id.id, name, company_currency,
                 current_currency)
 
-            if voucher.multiple_reconcile_ids:  # hook
-                self.action_move_line_writeoff_hook(ml_writeoff)  # hook
-            else:  # hook
-                if ml_writeoff:
-                    move_line_pool.create(ml_writeoff[0])
+            self.action_move_line_writeoff_hook(ml_writeoff)
 
             voucher.write({
                 'move_id': move_id.id,
