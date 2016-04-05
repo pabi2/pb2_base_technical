@@ -34,6 +34,24 @@ class AccountVoucher(models.Model):
                              current_currency):
         return line_total
 
+    @api.multi
+    def action_move_line_writeoff_hook(self, ml_writeoff):
+        if ml_writeoff:
+            writeoff_id = self.env['account.move.line'].create(ml_writeoff[0])
+        return writeoff_id
+
+    @api.v7
+    def action_move_line_create_hook(self, cr, uid, ids, 
+                                     rec_list_ids, context=None):
+        for rec_ids in rec_list_ids:
+            if len(rec_ids) >= 2:
+                self.pool.get('account.move.line').reconcile_partial(
+                    cr, uid,
+                    rec_ids, writeoff_acc_id=voucher.writeoff_acc_id.id,
+                    writeoff_period_id=voucher.period_id.id,
+                    writeoff_journal_id=voucher.journal_id.id)
+        return True
+
     @api.v7
     def action_move_line_create(self, cr, uid, ids, context=None):
         """ Add HOOK """
@@ -109,8 +127,11 @@ class AccountVoucher(models.Model):
                 voucher.id, line_total, move_id,
                 name, company_currency,
                 current_currency, local_context)
-            if ml_writeoff:
-                move_line_pool.create(cr, uid, ml_writeoff, local_context)
+            # HOOK
+            writeoff_id = self.action_move_line_writeoff_hook(cr, uid,
+                                                              [voucher.id],
+                                                              ml_writeoff,
+                                                              context)
             # We post the voucher.
             self.write(cr, uid, [voucher.id], {
                 'move_id': move_id,
@@ -124,11 +145,9 @@ class AccountVoucher(models.Model):
                 move_pool.post(cr, uid, [move_id], context={})
             # We automatically reconcile the account move lines.
             # reconcile = False (not in use when refactor)
-            for rec_ids in rec_list_ids:
-                if len(rec_ids) >= 2:
-                    move_line_pool.reconcile_partial(
-                        cr, uid,
-                        rec_ids, writeoff_acc_id=voucher.writeoff_acc_id.id,
-                        writeoff_period_id=voucher.period_id.id,
-                        writeoff_journal_id=voucher.journal_id.id)
+            # HOOK
+            self.action_move_line_create_hook(cr, uid,
+                                              [voucher.id],
+                                              rec_list_ids,
+                                              context=context)
         return True
