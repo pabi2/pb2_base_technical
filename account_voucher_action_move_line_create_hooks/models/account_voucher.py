@@ -37,8 +37,8 @@ class AccountVoucher(models.Model):
     @api.multi
     def action_move_line_writeoff_hook(self, ml_writeoff):
         if ml_writeoff:
-            writeoff_id = self.env['account.move.line'].create(ml_writeoff[0])
-        return writeoff_id
+            self.env['account.move.line'].create(ml_writeoff[0])
+        return True
 
     @api.v7
     def action_move_line_create_hook(self, cr, uid, ids, 
