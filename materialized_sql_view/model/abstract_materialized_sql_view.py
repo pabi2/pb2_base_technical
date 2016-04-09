@@ -222,13 +222,6 @@ class AbstractMaterializedSqlView(models.AbstractModel):
         """Method called after create materialized view and view,
            Nothing done in abstract method, it's  hook to used in subclass
         """
-        # kittiu, create unique index for materialized view
-        sql = """
-            CREATE UNIQUE INDEX %s
-            ON %s (id);
-        """ % (self.sql_mat_view_name + '_idx',
-               self.sql_mat_view_name)
-        self.env.cr.execute(sql)
 
     @api.model
     def before_refresh_materialized_view(self):
@@ -343,9 +336,11 @@ class PG090300(PGMaterializedViewManager):
                    dict(mat_view_name=mat_view_name,
                         view_name=view_name,
                         ))
+        cr.execute("CREATE UNIQUE INDEX %(mat_view_name)s_index "
+                   "ON %(mat_view_name)s (id)" %
+                   dict(mat_view_name=mat_view_name, ))
 
     def refresh_mat_view(self, cr, view_name, mat_view_name):
-        # kittiu, adding concurrently
         cr.execute("REFRESH MATERIALIZED VIEW CONCURRENTLY %(mat_view_name)s" %
                    dict(mat_view_name=mat_view_name,
                         ))
