@@ -43,6 +43,7 @@ class AccountVoucher(models.Model):
     @api.v7
     def action_move_line_create_hook(self, cr, uid, ids, 
                                      rec_list_ids, context=None):
+        voucher = self.browse(cr, uid, ids[0], context)
         for rec_ids in rec_list_ids:
             if len(rec_ids) >= 2:
                 self.pool.get('account.move.line').reconcile_partial(
