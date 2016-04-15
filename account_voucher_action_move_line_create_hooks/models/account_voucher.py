@@ -34,23 +34,23 @@ class AccountVoucher(models.Model):
                              current_currency):
         return line_total
 
-    @api.multi
-    def action_move_line_writeoff_hook(self, ml_writeoff):
+    @api.model
+    def action_move_line_writeoff_hook(self, voucher, ml_writeoff):
         if ml_writeoff:
             self.env['account.move.line'].create(ml_writeoff[0])
         return True
 
-    @api.v7
-    def action_move_line_create_hook(self, cr, uid, ids, 
-                                     rec_list_ids, context=None):
-        voucher = self.browse(cr, uid, ids[0], context)
+    @api.model
+    def action_move_line_create_hook(self, voucher,
+                                     rec_list_ids):
         for rec_ids in rec_list_ids:
             if len(rec_ids) >= 2:
-                self.pool.get('account.move.line').reconcile_partial(
-                    cr, uid,
-                    rec_ids, writeoff_acc_id=voucher.writeoff_acc_id.id,
+                move_lines = self.env['account.move.line'].browse(rec_ids)
+                move_lines.reconcile_partial(
+                    writeoff_acc_id=voucher.writeoff_acc_id.id,
                     writeoff_period_id=voucher.period_id.id,
-                    writeoff_journal_id=voucher.journal_id.id)
+                    writeoff_journal_id=voucher.journal_id.id
+                )
         return True
 
     @api.v7
@@ -129,10 +129,8 @@ class AccountVoucher(models.Model):
                 name, company_currency,
                 current_currency, local_context)
             # HOOK
-            writeoff_id = self.action_move_line_writeoff_hook(cr, uid,
-                                                              [voucher.id],
-                                                              ml_writeoff,
-                                                              context)
+            self.action_move_line_writeoff_hook(cr, uid, voucher,
+                                                ml_writeoff, context)
             # We post the voucher.
             self.write(cr, uid, [voucher.id], {
                 'move_id': move_id,
@@ -148,7 +146,7 @@ class AccountVoucher(models.Model):
             # reconcile = False (not in use when refactor)
             # HOOK
             self.action_move_line_create_hook(cr, uid,
-                                              [voucher.id],
+                                              voucher,
                                               rec_list_ids,
-                                              context=context)
+                                              context)
         return True
