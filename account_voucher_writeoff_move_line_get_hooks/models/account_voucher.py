@@ -33,11 +33,11 @@ class AccountVoucher(models.Model):
         move_lines.append(move_line)
         return move_lines
 
-    @api.multi
-    def writeoff_move_line_get(self, line_total,
+    @api.model
+    def writeoff_move_line_get(self, voucher_id, line_total,
                                move_id, name,
                                company_currency, current_currency):
-        voucher_brw = self
+        voucher_brw = self.browse(voucher_id)
         current_currency_obj = voucher_brw.currency_id or \
             voucher_brw.journal_id.company_id.currency_id
         list_move_line = []

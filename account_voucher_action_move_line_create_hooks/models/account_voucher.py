@@ -53,100 +53,77 @@ class AccountVoucher(models.Model):
                 )
         return True
 
-    @api.v7
-    def action_move_line_create(self, cr, uid, ids, context=None):
+    @api.multi
+    def action_move_line_create(self):
         """ Add HOOK """
-        if context is None:
-            context = {}
-        move_pool = self.pool.get('account.move')
-        move_line_pool = self.pool.get('account.move.line')
-        for voucher in self.browse(cr, uid, ids, context=context):
+        context = self._context
+        move_pool = self.env['account.move']
+        move_line_pool = self.env['account.move.line']
+        for voucher in self:
             local_context = dict(
                 context,
                 force_company=voucher.journal_id.company_id.id)
             if voucher.move_id:
                 continue
-            company_currency = self._get_company_currency(cr, uid,
-                                                          voucher.id, context)
-            current_currency = self._get_current_currency(cr, uid,
-                                                          voucher.id, context)
+            company_currency = self._get_company_currency(voucher.id)
+            current_currency = self._get_current_currency(voucher.id)
             # we select the context to use accordingly if
             # it's a multicurrency case or not
-            context = self._sel_context(cr, uid, voucher.id, context)
+            context = self.with_context(context)._sel_context(voucher.id)
             # But for the operations made by _convert_amount, we always
             # need to give the date in the context
             ctx = context.copy()
             ctx.update({'date': voucher.date})
             # Create the account move record.
-            move_id = move_pool.create(cr, uid,
-                                       self.account_move_get(
-                                           cr, uid,
-                                           voucher.id, context=context),
-                                       context=context)
+            move = move_pool.with_context(context).\
+                create(self.with_context(context).account_move_get(voucher.id))
             # Get the name of the account_move just created
-            name = move_pool.browse(cr, uid, move_id, context=context).name
+            name = move.name
             # Create the first line of the voucher
-            move_line_id = move_line_pool.create(
-                cr, uid,
-                self.first_move_line_get(
-                    cr, uid, voucher.id,
-                    move_id, company_currency,
-                    current_currency, local_context),
-                local_context)
-            move_line_brw = move_line_pool.browse(cr, uid,
-                                                  move_line_id,
-                                                  context=context)
-            line_total = move_line_brw.debit - move_line_brw.credit
+            move_line = move_line_pool.with_context(local_context).create(
+                self.with_context(local_context).first_move_line_get(
+                    voucher.id, move.id, company_currency, current_currency))
+            line_total = move_line.debit - move_line.credit
             rec_list_ids = []
 
             if voucher.type == 'sale':
-                line_total = line_total - self._convert_amount(
-                    cr, uid,
-                    voucher.tax_amount,
-                    voucher.id, context=ctx)
+                line_total = line_total - \
+                    self.with_context(ctx)._convert_amount(voucher.tax_amount,
+                                                           voucher.id)
             elif voucher.type == 'purchase':
-                line_total = line_total + self._convert_amount(
-                    cr, uid,
-                    voucher.tax_amount,
-                    voucher.id, context=ctx)
+                line_total = line_total + \
+                    self.with_context(ctx)._convert_amount(voucher.tax_amount,
+                                                           voucher.id)
 
             # Create one move line per voucher line where amount is not 0.0
-            line_total, rec_list_ids = self.voucher_move_line_create(
-                cr, uid,
-                voucher.id, line_total,
-                move_id, company_currency,
-                current_currency, context)
+            line_total, rec_list_ids = \
+                self.with_context(context).voucher_move_line_create(
+                    voucher.id, line_total, move.id,
+                    company_currency, current_currency)
             # HOOK
-            line_total = self._finalize_line_total(cr, uid,
-                                                   voucher, line_total,
-                                                   move_id, company_currency,
-                                                   current_currency, context)
+            line_total = self.with_context(context).\
+                _finalize_line_total(voucher, line_total, move.id,
+                                     company_currency, current_currency)
             # --
             # Create the writeoff line if needed
-            ml_writeoff = self.writeoff_move_line_get(
-                cr, uid,
-                voucher.id, line_total, move_id,
-                name, company_currency,
-                current_currency, local_context)
+            ml_writeoff = self.with_context(local_context).\
+                writeoff_move_line_get(voucher.id, line_total, move.id, name,
+                                       company_currency, current_currency)
             # HOOK
-            self.action_move_line_writeoff_hook(cr, uid, voucher,
-                                                ml_writeoff, context)
+            self.action_move_line_writeoff_hook(voucher, ml_writeoff)
             # We post the voucher.
-            self.write(cr, uid, [voucher.id], {
-                'move_id': move_id,
+            voucher.write({
+                'move_id': move.id,
                 'state': 'posted',
                 'number': name,
             })
             # HOOK
-            voucher = self._finalize_voucher(cr, uid, voucher, context)
+            voucher = self._finalize_voucher(voucher)
             # --
             if voucher.journal_id.entry_posted:
-                move_pool.post(cr, uid, [move_id], context={})
+                move.post()
             # We automatically reconcile the account move lines.
             # reconcile = False (not in use when refactor)
             # HOOK
-            self.action_move_line_create_hook(cr, uid,
-                                              voucher,
-                                              rec_list_ids,
-                                              context)
+            self.action_move_line_create_hook(voucher, rec_list_ids)
         return True
