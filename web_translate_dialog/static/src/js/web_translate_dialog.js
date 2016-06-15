@@ -1,3 +1,4 @@
+
 openerp.web_translate_dialog = function (instance) {
 
     "use strict";
@@ -129,10 +130,17 @@ openerp.web_translate_dialog = function (instance) {
         set_fields_values: function(lang, values) {
             var self = this;
             _.each(this.translatable_fields_keys, function(f) {
-                self.$el.find('.oe_translation_field[name="' + lang.code + '-' + f + '"]')
-                    .val(values[f] || '')
-                    .attr('data-value', values[f] || '');
-
+                // below code prevent user to change translation of other language
+                if (self.view_language != 'en_US' && lang.code != self.view_language) { //ecosoft
+                    self.$el.find('.oe_translation_field[name="' + lang.code + '-' + f + '"]')
+                        .val(values[f] || '')
+                        .attr('data-value', values[f] || '')
+                        .attr('readonly', 'readonly');
+                } else{ 
+                    self.$el.find('.oe_translation_field[name="' + lang.code + '-' + f + '"]')
+                        .val(values[f] || '')
+                        .attr('data-value', values[f] || '')
+                }
                 var $tarea = self.$el.find('.oe_form_field_html .oe_translation_field[name="' + lang.code + '-' + f + '"]');
                 if ($tarea.length) {
                     $tarea.cleditor()[0].updateFrame();
@@ -177,18 +185,29 @@ openerp.web_translate_dialog = function (instance) {
             var translations = {},
                 self = this,
                 translation_mutex = new $.Mutex();
+            var field_list = []
             self.$el.find('.oe_translation_field.touched').each(function() {
                 var field = $(this).attr('name').split('-');
                 if (!translations[field[0]]) {
                     translations[field[0]] = {};
                 }
+                field_list.push(field[1])
                 translations[field[0]][field[1]] = $(this).val();
             });
             _.each(translations, function(data, code) {
                 if (code === self.view_language) {
                     self.view.set_values(data);
                 }
+                var trans = new instance.web.DataSet(self, 'ir.translation');
                 translation_mutex.exec(function() {
+                    //ecosoft
+                    _.each(field_list, function(field_name){
+                        trans.call_button('translate_fields', [self.view.dataset.model, 
+                                                            self.view.datarecord.id,
+                                                            field_name,
+                                                            self.view.dataset.get_context()]).done(function(r) {
+                        });
+                    })
                     return new instance.web.DataSet(self, self.view.dataset.model, self.view.dataset.get_context()).write(self.view.datarecord.id, data, { context : { 'lang': code }});
                 });
             });
