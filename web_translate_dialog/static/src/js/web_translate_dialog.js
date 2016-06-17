@@ -130,22 +130,14 @@ openerp.web_translate_dialog = function (instance) {
         set_fields_values: function(lang, values) {
             var self = this;
             _.each(this.translatable_fields_keys, function(f) {
-                // below code prevent user to change translation of other language
-                if (self.view_language != 'en_US' && lang.code != self.view_language) { //ecosoft
                     self.$el.find('.oe_translation_field[name="' + lang.code + '-' + f + '"]')
-                        .val(values[f] || '')
-                        .attr('data-value', values[f] || '')
-                        .attr('readonly', 'readonly');
-                } else{ 
-                    self.$el.find('.oe_translation_field[name="' + lang.code + '-' + f + '"]')
-                        .val(values[f] || '')
-                        .attr('data-value', values[f] || '')
-                }
-                var $tarea = self.$el.find('.oe_form_field_html .oe_translation_field[name="' + lang.code + '-' + f + '"]');
-                if ($tarea.length) {
-                    $tarea.cleditor()[0].updateFrame();
-                }
-            });
+                            .val(values[f] || '')
+                            .attr('data-value', values[f] || '')
+                    var $tarea = self.$el.find('.oe_form_field_html .oe_translation_field[name="' + lang.code + '-' + f + '"]');
+                    if ($tarea.length) {
+                        $tarea.cleditor()[0].updateFrame();
+                    }
+                });
             var $textarea = this.$el.find('textarea.oe_translation_field');
             $textarea.css({minHeight:'100px'});
             $textarea.autosize();
@@ -156,6 +148,12 @@ openerp.web_translate_dialog = function (instance) {
                 deferred = [];
 
             this.$el.find('.oe_translation_field').val('').removeClass('touched');
+            var trans = new instance.web.DataSet(self, 'ir.translation');
+            trans.call_button('to_do_translate', [self.view.dataset.model,
+                                                        self.view.datarecord.id,
+                                                        this.translatable_fields_keys,
+                                                        self.view.dataset.get_context()]).done(function(r) {
+            })
             _.each(self.languages, function(lg) {
                 var deff = $.Deferred();
                 deferred.push(deff);
