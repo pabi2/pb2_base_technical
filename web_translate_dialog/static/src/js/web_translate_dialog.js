@@ -146,8 +146,8 @@ openerp.web_translate_dialog = function (instance) {
         do_load_fields_values: function() {
             var self = this,
                 deferred = [];
-
             this.$el.find('.oe_translation_field').val('').removeClass('touched');
+            //ecosoft
             var trans = new instance.web.DataSet(self, 'ir.translation');
             trans.call_button('to_do_translate', [self.view.dataset.model,
                                                         self.view.datarecord.id,
@@ -206,6 +206,14 @@ openerp.web_translate_dialog = function (instance) {
                                                             self.view.dataset.get_context()]).done(function(r) {
                         });
                     })
+                    //ecosoft
+                    trans.call_button('set_translation', [self.view.dataset.model, 
+                                                            self.view.datarecord.id,
+                                                            field_list,
+                                                            data,
+                                                            code,
+                                                            self.view.dataset.get_context()]).done(function(r) {
+                    });
                     return new instance.web.DataSet(self, self.view.dataset.model, self.view.dataset.get_context()).write(self.view.datarecord.id, data, { context : { 'lang': code }});
                 });
             });
