@@ -14,6 +14,10 @@ class AccountInvoice(models.Model):
         key = (tax.tax_code_id.id, tax.base_code_id.id, tax.account_id.id)
         return key
 
+    @api.model
+    def check_missing_tax(self):
+        return True
+
     @api.multi
     def check_tax_lines(self, compute_taxes):
         account_invoice_tax = self.env['account.invoice.tax']
@@ -41,7 +45,8 @@ class AccountInvoice(models.Model):
                                      _('Tax base different!\nClick\
                                      on compute to update the tax base.'))
             for key in compute_taxes:
-                if key not in tax_key:
-                    raise except_orm(_('Warning!'),
-                                     _('Taxes are missing!\nClick\
-                                     on compute button.'))
+                if self.check_missing_tax():
+                    if key not in tax_key:
+                        raise except_orm(_('Warning!'),
+                                         _('Taxes are missing!\nClick\
+                                         on compute button.'))
