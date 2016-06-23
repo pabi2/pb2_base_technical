@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
+from openerp.models import BaseModel
 from openerp import api, models, _
+
+@api.v7
+def copy_translations(self, cr, uid, old_id, new_id, context=None):
+    return
+
+BaseModel.copy_translations = copy_translations
 
 
 class IRTranslation(models.Model):
