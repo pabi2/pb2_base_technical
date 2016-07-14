@@ -1,6 +1,6 @@
 .navbar-inverse .navbar-text {
-  color: #FFFFFF;
+  color: #DDD;
 }
 .navbar-inverse .navbar-nav > li > a {
-  color: #FFFFFF;
+  color: #0DD;
 }
