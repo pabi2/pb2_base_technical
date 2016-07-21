@@ -19,6 +19,7 @@
 #
 ##############################################################################
 from openerp.osv import osv
+from openerp.tools.translate import _
 
 
 class SaleOrderLine(osv.osv):
