@@ -56,6 +56,10 @@ class AccountVoucher(models.Model):
     @api.multi
     def action_move_line_create(self):
         """ Add HOOK """
+        # HOOK: To bypass this method completely
+        if self._context.get('bypass', False):
+            return True
+        # --
         context = self._context
         move_pool = self.env['account.move']
         move_line_pool = self.env['account.move.line']
