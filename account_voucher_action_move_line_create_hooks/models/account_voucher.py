@@ -37,6 +37,8 @@ class AccountVoucher(models.Model):
     @api.model
     def action_move_line_writeoff_hook(self, voucher, ml_writeoff):
         if ml_writeoff:
+            if isinstance(ml_writeoff, dict):
+                ml_writeoff = [ml_writeoff]
             self.env['account.move.line'].create(ml_writeoff[0])
         return True
 
