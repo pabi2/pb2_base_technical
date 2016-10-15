@@ -22,6 +22,7 @@ class AccountVoucher(models.Model):
 
     @api.multi
     def cancel_voucher(self):
+        MoveLine = self.env['account.move.line']
         for voucher in self:
             # refresh to make sure you don't unlink an already removed move
             voucher.refresh()
@@ -30,11 +31,12 @@ class AccountVoucher(models.Model):
                 # an already unreconciled entry
                 line.refresh()
                 if line.reconcile_id:
-                    move_lines = [move_line.id
-                                  for move_line in line.reconcile_id.line_id]
-                    move_lines.remove(line.id)
+                    move_line_ids = [move_line.id for move_line in
+                                     line.reconcile_id.line_id]
+                    move_line_ids.remove(line.id)
                     line.reconcile_id.unlink()
-                    if len(move_lines) >= 2:
+                    if len(move_line_ids) >= 2:
+                        move_lines = MoveLine.browse(move_line_ids)
                         move_lines.reconcile_partial('auto')
             if voucher.move_id:
                 self.voucher_move_cancel_hook(voucher)  # HOOK
