@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from openerp import models, api, _
+from openerp.exceptions import except_orm
 
 
 class AccountInvoice(models.Model):
