@@ -20,6 +20,7 @@
 ##############################################################################
 from openerp.osv import osv
 from openerp.tools.translate import _
+from openerp.tools import float_round as round
 
 
 class SaleOrderLine(osv.osv):
@@ -53,7 +54,8 @@ class SaleOrderLine(osv.osv):
                        self.pool.get('decimal.precision').precision_get(
                             cr, uid, 'Product Price'))
         fpos = line.order_id.fiscal_position or False
-        account_id = self.pool.get('account.fiscal.position').map_account(cr, uid, fpos, account_id)
+        account_id = self.pool.get('account.fiscal.position').\
+            map_account(cr, uid, fpos, account_id)
         if not account_id:
             raise osv.except_osv(
                 _('Error!'),
