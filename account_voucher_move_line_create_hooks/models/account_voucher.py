@@ -176,11 +176,13 @@ class AccountVoucher(models.Model):
                         # if the rate is specified on the voucher, it will be
                         # used thanks to the special keys in the context
                         # otherwise we use the rates of the system
+                        currency_obj.browse(company_currency)
                         amount_currency = \
-                            currency_obj.with_context(ctx).compute(
-                                company_currency,
-                                line.move_line_id.currency_id.id,
-                                move_line['debit']-move_line['credit'])
+                            currency_obj.browse(company_currency).\
+                            with_context(ctx).compute(
+                                move_line['debit']-move_line['credit'],
+                                line.move_line_id.currency_id,
+                            )
                 if line.amount == line.amount_unreconciled:
                     foreign_currency_diff = \
                         line.move_line_id.amount_residual_currency - abs(
