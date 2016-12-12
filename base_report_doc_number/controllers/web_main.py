@@ -11,6 +11,8 @@ from openerp.http import request
 
 
 def get_file_name(filename, context=None):
+    if context is None:
+        context = {}
     filetype = filename.split('.')[-1]
     model = context.get('active_model', False)
     active_ids = context.get('active_ids', [])
@@ -75,7 +77,8 @@ class ReportsNumber(Reports):
             else:
                 file_name = action['report_name']
         file_name = '%s.%s' % (file_name, report_struct['format'])
-        file_name = get_file_name(file_name, context)  # Hook
+        # Call hook to change filename
+        file_name = get_file_name(file_name, context)
         return request.make_response(
             report,
             headers=[
