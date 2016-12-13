@@ -10,20 +10,23 @@ from openerp.addons.web.controllers.main import Reports,\
 from openerp.http import request
 
 
-def get_file_name(filename, context=None):
+def get_file_name(filename, action, context=None):
     if context is None:
         context = {}
-    filetype = filename.split('.')[-1]
-    model = context.get('active_model', False)
-    active_ids = context.get('active_ids', [])
-    if model and active_ids and len(active_ids) == 1:
-        record = request.env[model].browse(active_ids)
-        if 'number' in record._fields:
-            name = record.number
-            filename = name + '.' + filetype
-        elif 'name' in record._fields:
-            name = record.name
-            filename = name + '.' + filetype
+    Reports = request.env['ir.actions.report.xml']
+    report = Reports.search(
+        [('report_name', '=', action['report_name'])],
+        limit=1
+    )
+    if report and report.save_as_prefix:
+        model = context.get('active_model', False)
+        active_ids = context.get('active_ids', [])
+        if model and active_ids and len(active_ids) == 1:
+            record = request.env[model].browse(active_ids)
+            eval_args = {'object': record, 'time': time}
+            new_filename = eval(report.save_as_prefix, eval_args)
+            if new_filename:
+                filename = new_filename
     return filename
 
 
@@ -76,9 +79,9 @@ class ReportsNumber(Reports):
                 file_name = reports.read(res_id[0], ['name'], context)['name']
             else:
                 file_name = action['report_name']
-        file_name = '%s.%s' % (file_name, report_struct['format'])
         # Call hook to change filename
-        file_name = get_file_name(file_name, context)
+        file_name = get_file_name(file_name, action, context)
+        file_name = '%s.%s' % (file_name, report_struct['format'])
         return request.make_response(
             report,
             headers=[

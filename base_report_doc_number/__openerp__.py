@@ -15,7 +15,9 @@ Report will be print with document number name..
         'report',
     ],
     'demo': [],
-    'data': [],
+    'data': [
+        'views/report_view.xml',
+    ],
     'auto_install': False,
     'application': False,
     'installable': True,

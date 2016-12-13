@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import time
 import simplejson
 
 from openerp.addons.report.controllers.main import ReportController
@@ -17,19 +18,19 @@ from werkzeug.datastructures import Headers
 def get_file_name(filename, docids):
     if not docids:
         return filename
-    docids = str(docids).split(',')
-    active_ids = docids
     report = request.env['ir.actions.report.xml'].\
         search([('report_name', '=', filename)])
+    if not report.save_as_prefix:
+        return filename
+    docids = str(docids).split(',')
+    active_ids = docids
     model = report.model
     if model and active_ids and len(active_ids) == 1:
         record = request.env[model].browse(int(active_ids[0]))
-        if 'number' in record._fields and record.number:
-            name = record.number
-            filename = name
-        elif 'name' in record._fields and record.name:
-            name = record.name
-            filename = name
+        eval_args = {'object': record, 'time': time}
+        new_filename = eval(report.save_as_prefix, eval_args)
+        if new_filename:
+            filename = new_filename
     return filename
 
 

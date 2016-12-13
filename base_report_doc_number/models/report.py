@@ -4,23 +4,28 @@ import time
 import base64
 import logging
 
-from openerp import models, api
+from openerp import models, api, fields
 
 _logger = logging.getLogger(__name__)
 
 
-def get_file_name(filename, record):
-    filetype = 'pdf'
-    if filename:
-        filetype = filename.split('.')[-1]
-    if record:
-        if 'number' in record._fields and record.number:
-            name = record.number
-            filename = name + '.' + filetype
-        elif 'name' in record._fields and record.name:
-            name = record.name
-            filename = name + '.' + filetype
+def get_file_name(filename, report, eval_args):
+    if filename and report.save_as_prefix:
+        filename = eval(report.save_as_prefix, eval_args)
     return filename
+
+
+class IRactionsReportXml(models.Model):
+    _inherit = 'ir.actions.report.xml'
+
+    save_as_prefix = fields.Char(
+        string='Save as Prefix',
+        help='This is the filename of the \
+        save as used to store the printing result.\
+        Keep empty to not save the printed reports with given prefix.\
+        You can use a python expression with the\
+        object and time variables. Do not give file extension.',
+    )
 
 
 class Report(models.Model):
@@ -42,7 +47,8 @@ class Report(models.Model):
                 filename = eval(report.attachment, {'object': obj,
                                                     'time': time})
                 # Call hook to change filename
-                filename = get_file_name(filename, obj)
+                eval_args = {'object': obj, 'time': time}
+                filename = get_file_name(filename, report, eval_args)
                 # If the user has checked 'Reload from Attachment'
                 if report.attachment_use:
                     alreadyindb = [('datas_fname', '=', filename),
