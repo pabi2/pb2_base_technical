@@ -83,8 +83,9 @@ class Report:
         # not removed, we end up with two records named 'purchase.order' so we need to destinguish
         # between the two by searching '.jrxml' in report_rml.
         ids = self.pool.get('ir.actions.report.xml').search(self.cr, self.uid, [('report_name', '=', self.name[7:]), ('report_rml', 'ilike', '.jrxml')], context=self.context)
-        data = self.pool.get('ir.actions.report.xml').read(self.cr, self.uid, ids[0], ['report_rml', 'jasper_output', 'copies'])
+        data = self.pool.get('ir.actions.report.xml').read(self.cr, self.uid, ids[0], ['report_rml', 'jasper_output', 'copies', 'force_locale'])
         copies = data['copies'] or 1
+        force_locale = data['force_locale'] or False
         results = []
         if data['jasper_output']:
             self.outputFormat = data['jasper_output']
@@ -151,7 +152,7 @@ class Report:
         # Call the external java application that will generate the PDF file in outputFile
         copy = 1
         while copy <= copies:
-            pages = self.executeReport(dataFile, outputFile, subreportDataFiles, copy)
+            pages = self.executeReport(dataFile, outputFile, subreportDataFiles, copy, force_locale)
             elapsed = (time.time() - start) / 60
             logger.info("ELAPSED: %f" % elapsed)
             # Read data from the generated file and return it
@@ -182,12 +183,12 @@ class Report:
                     for page in range(reader.getNumPages()):
                         output.addPage(reader.getPage(page))
                 s = cStringIO.StringIO()
-                output.write(s)  
+                output.write(s)
                 if self.context.get('return_pages'):
                     return ( s.getvalue() , self.outputFormat, pages )
                 else:
                     return ( s.getvalue() , self.outputFormat )
-            else:   
+            else:
                 raise osv.except_osv(_('User Error!'), _('Multiple Jasper Files works only with PDF'))
         else:
             if self.context.get('return_pages'):
@@ -225,11 +226,13 @@ class Report:
         return tools.config['db_user'] or self.pool['ir.config_parameter'].get_param(self.cr, self.uid, 'db_user') or self.systemUserName()
 
     def password(self):
-        
+
         return tools.config['db_password'] or self.pool['ir.config_parameter'].get_param(self.cr, self.uid, 'db_password') or ''
 
-    def executeReport(self, dataFile, outputFile, subreportDataFiles, copy):
+    def executeReport(self, dataFile, outputFile, subreportDataFiles, copy, force_locale):
         locale = self.context.get('lang', 'en_US')
+        if force_locale:
+            locale = force_locale
 
         connectionParameters = {
             'output': self.outputFormat,
@@ -266,7 +269,7 @@ class report_jasper(report.interface.report_int):
         else:
             if name in openerp.report.interface.report_int._reports:
                 del openerp.report.interface.report_int._reports[name]
-#             openerp.report.interface.report_int._reports[name] = 
+#             openerp.report.interface.report_int._reports[name] =
         super(report_jasper, self).__init__(name)
         self.model = model
         self.parser = parser

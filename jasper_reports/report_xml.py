@@ -78,10 +78,11 @@ class report_xml(osv.Model):
         'jasper_model_id': fields.many2one('ir.model', 'Model', help=''),  # We use jas-er_model
         'jasper_report': fields.boolean('Is Jasper Report?'),
         'copies': fields.integer('Copies', help="Copies apply for Jasper Report only"),
+        'force_locale': fields.char('Force Locale', size=5, help="Pass this locale to report instead the default one"),
     }
     _defaults = {
         'jasper_output': lambda self, cr, uid, context: context and context.get('jasper_report') and 'pdf' or False,
-        'copies': 1
+        'copies': 1,
     }
 
     def create(self, cr, uid, vals, context=None):
@@ -279,4 +280,3 @@ class report_xml(osv.Model):
         self.generate_xml(cr, uid, context, self.pool, model, recordNode, document, depth, True)
         topNode.toxml()
         return topNode.toxml()
-
