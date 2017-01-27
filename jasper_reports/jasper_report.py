@@ -87,6 +87,7 @@ class Report:
         copies = data['copies'] or 1
         force_locale = data['force_locale'] or False
 
+        # Set force_locale as lang in context to print report in specified language on report action
         if force_locale:
             self.context.update({'lang': force_locale})
 
