@@ -92,7 +92,11 @@ class Report:
             self.context.update({'lang': force_locale})
 
         results = []
+        txt_csv = False  # .txt file that use csv format
         if data['jasper_output']:
+            if data['jasper_output'] == 'txt_csv':
+                data['jasper_output'] = 'csv'
+                txt_csv = True
             self.outputFormat = data['jasper_output']
         self.reportPath = data['report_rml']
         self.reportPath = os.path.join(self.addonsPath(), self.reportPath)
@@ -196,6 +200,8 @@ class Report:
             else:
                 raise osv.except_osv(_('User Error!'), _('Multiple Jasper Files works only with PDF'))
         else:
+            if self.outputFormat == 'csv' and txt_csv:  # Case text with delimited
+                self.outputFormat = 'txt'
             if self.context.get('return_pages'):
                 return (data, self.outputFormat, pages)
             else:
