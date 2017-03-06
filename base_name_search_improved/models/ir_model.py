@@ -8,7 +8,7 @@ from openerp import tools
 
 
 # Extended name search is only used on some operators
-ALLOWED_OPS = set(['ilike', 'like'])
+ALLOWED_OPS = set(['ilike', 'like','='])
 
 
 @tools.ormcache(skiparg=0)
