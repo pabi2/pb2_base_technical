@@ -20,7 +20,7 @@
     ],
     'auto_install': False,
     'application': False,
-    'installable': True,
+    'installable': False,  # Mark installable, as it not being used.
 }
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
