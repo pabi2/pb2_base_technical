@@ -61,7 +61,7 @@ class AccountVoucher(models.Model):
         return {
             'journal_id': line.voucher_id.journal_id.id,
             'period_id': line.voucher_id.period_id.id,
-            'name': _('change')+': '+(line.name or '/'),
+            'name': _('change') + ': ' + (line.name or '/'),
             'account_id': line.account_id.id,
             'move_id': move_id,
             'partner_id': line.voucher_id.partner_id.id,
@@ -180,7 +180,7 @@ class AccountVoucher(models.Model):
                         amount_currency = \
                             currency_obj.browse(company_currency).\
                             with_context(ctx).compute(
-                                move_line['debit']-move_line['credit'],
+                                move_line['debit'] - move_line['credit'],
                                 line.move_line_id.currency_id,
                             )
                 if line.amount == line.amount_unreconciled:

@@ -64,7 +64,7 @@ class AccountVoucher(models.Model):
             name = write_off_name and write_off_name or name
 
             move_lines = self.multiple_reconcile_ded_amount_hook(
-                    line_total, move_id, account_id, diff, ded_amount, name,
-                    company_currency, current_currency)
+                line_total, move_id, account_id, diff, ded_amount, name,
+                company_currency, current_currency)
             list_move_line.extend(move_lines)
             return list_move_line
