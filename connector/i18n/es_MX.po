@@ -3,13 +3,15 @@
 # * connector
 # 
 # Translators:
-# Jesus Alan Ramos Rodriguez <alan.ramos@jarsa.com.mx>, 2015
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2014
+# Jesús Alan Ramos Rodríguez <alan.ramos@jarsa.com.mx>, 2015
+# Jesús Alan Ramos Rodríguez <alan.ramos@jarsa.com.mx>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: connector (8.0)\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-16 06:23+0000\n"
-"PO-Revision-Date: 2015-10-15 13:38+0000\n"
+"POT-Creation-Date: 2017-04-05 02:47+0000\n"
+"PO-Revision-Date: 2017-04-25 10:40+0000\n"
 "Last-Translator: OCA Transbot <transbot@odoo-community.org>\n"
 "Language-Team: Spanish (Mexico) (http://www.transifex.com/oca/OCA-connector-8-0/language/es_MX/)\n"
 "MIME-Version: 1.0\n"
@@ -91,19 +93,19 @@ msgid "Cancel"
 msgstr "Cancelar"
 
 #. module: connector
-#: code:addons/connector/queue/job.py:574
+#: code:addons/connector/queue/job.py:619
 #, python-format
 msgid "Canceled. Nothing to do."
 msgstr ""
 
 #. module: connector
-#: code:addons/connector/queue/model.py:457
+#: code:addons/connector/queue/model.py:462
 #, python-format
 msgid "Cannot change the root channel"
 msgstr ""
 
 #. module: connector
-#: code:addons/connector/queue/model.py:464
+#: code:addons/connector/queue/model.py:469
 #, python-format
 msgid "Cannot remove the root channel"
 msgstr ""
@@ -213,7 +215,7 @@ msgstr ""
 #: field:connector.config.settings,create_uid:0
 #: field:queue.job.channel,create_uid:0 field:queue.requeue.job,create_uid:0
 msgid "Created by"
-msgstr ""
+msgstr "Creado por"
 
 #. module: connector
 #: field:connector.checkpoint,create_date:0
@@ -221,7 +223,7 @@ msgstr ""
 #: field:connector.config.settings,create_date:0
 #: field:queue.job.channel,create_date:0 field:queue.requeue.job,create_date:0
 msgid "Created on"
-msgstr ""
+msgstr "Creado en"
 
 #. module: connector
 #: field:queue.job,retry:0
@@ -242,12 +244,24 @@ msgstr ""
 #: help:connector.checkpoint,message_last_post:0
 #: help:queue.job,message_last_post:0
 msgid "Date of the last message posted on the record."
-msgstr ""
+msgstr "Fecha de último trabajo realizado en esta cuenta"
 
 #. module: connector
 #: field:queue.job,name:0
 msgid "Description"
-msgstr ""
+msgstr "Descripción"
+
+#. module: connector
+#: field:connector.backend,display_name:0
+#: field:connector.checkpoint,display_name:0
+#: field:connector.checkpoint.review,display_name:0
+#: field:connector.config.settings,display_name:0
+#: field:external.binding,display_name:0 field:queue.job,display_name:0
+#: field:queue.job.channel,display_name:0
+#: field:queue.job.function,display_name:0
+#: field:queue.requeue.job,display_name:0 field:queue.worker,display_name:0
+msgid "Display Name"
+msgstr "Nombre desplegado"
 
 #. module: connector
 #: view:queue.job:connector.view_queue_job_search selection:queue.job,state:0
@@ -331,12 +345,12 @@ msgstr ""
 #: field:queue.job.channel,id:0 field:queue.job.function,id:0
 #: field:queue.requeue.job,id:0 field:queue.worker,id:0
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: connector
 #: help:connector.checkpoint,message_unread:0 help:queue.job,message_unread:0
 msgid "If checked new messages require your attention."
-msgstr ""
+msgstr "Si se marca, los nuevos mensajes requieren su atención"
 
 #. module: connector
 #: view:queue.job:connector.view_queue_job_form
@@ -407,7 +421,19 @@ msgstr ""
 #: field:connector.checkpoint,message_last_post:0
 #: field:queue.job,message_last_post:0
 msgid "Last Message Date"
-msgstr ""
+msgstr "Fecha de último mensaje"
+
+#. module: connector
+#: field:connector.backend,__last_update:0
+#: field:connector.checkpoint,__last_update:0
+#: field:connector.checkpoint.review,__last_update:0
+#: field:connector.config.settings,__last_update:0
+#: field:external.binding,__last_update:0 field:queue.job,__last_update:0
+#: field:queue.job.channel,__last_update:0
+#: field:queue.job.function,__last_update:0
+#: field:queue.requeue.job,__last_update:0 field:queue.worker,__last_update:0
+msgid "Last Modified on"
+msgstr "Ultima modificacion realizada"
 
 #. module: connector
 #: field:connector.checkpoint,write_uid:0
@@ -415,7 +441,7 @@ msgstr ""
 #: field:connector.config.settings,write_uid:0
 #: field:queue.job.channel,write_uid:0 field:queue.requeue.job,write_uid:0
 msgid "Last Updated by"
-msgstr ""
+msgstr "Ultima actualizacion por"
 
 #. module: connector
 #: field:connector.checkpoint,write_date:0
@@ -423,7 +449,7 @@ msgstr ""
 #: field:connector.config.settings,write_date:0
 #: field:queue.job.channel,write_date:0 field:queue.requeue.job,write_date:0
 msgid "Last Updated on"
-msgstr ""
+msgstr "Ultima actualización realizada"
 
 #. module: connector
 #: field:external.binding,sync_date:0
@@ -454,7 +480,7 @@ msgstr "Mensajes"
 #. module: connector
 #: help:connector.checkpoint,message_ids:0 help:queue.job,message_ids:0
 msgid "Messages and communication history"
-msgstr ""
+msgstr "Mensajes e historial de comunicación"
 
 #. module: connector
 #: view:connector.checkpoint:connector.view_connector_checkpoint_search
@@ -467,6 +493,11 @@ msgstr "Modelo"
 #: field:queue.job.function,name:0
 msgid "Name"
 msgstr "Nombre"
+
+#. module: connector
+#: help:connector.checkpoint,name:0
+msgid "Name of the record to review"
+msgstr ""
 
 #. module: connector
 #: view:connector.checkpoint:connector.view_connector_checkpoint_search
@@ -496,7 +527,7 @@ msgid "Parent Channel"
 msgstr ""
 
 #. module: connector
-#: code:addons/connector/queue/model.py:449
+#: code:addons/connector/queue/model.py:454
 #, python-format
 msgid "Parent channel required."
 msgstr ""
@@ -532,8 +563,18 @@ msgid "Queue Worker"
 msgstr ""
 
 #. module: connector
+#: field:connector.checkpoint,record:0
+msgid "Record"
+msgstr ""
+
+#. module: connector
 #: field:connector.checkpoint,record_id:0
 msgid "Record ID"
+msgstr ""
+
+#. module: connector
+#: field:connector.checkpoint,name:0
+msgid "Record Name"
 msgstr ""
 
 #. module: connector
@@ -610,7 +651,7 @@ msgid "Share or embbed any screen of Odoo."
 msgstr ""
 
 #. module: connector
-#: code:addons/connector/queue/model.py:187
+#: code:addons/connector/queue/model.py:192
 #, python-format
 msgid ""
 "Something bad happened during the execution of the job. More details in the "
@@ -635,7 +676,7 @@ msgstr "Estado"
 #. module: connector
 #: field:connector.checkpoint,state:0
 msgid "Status"
-msgstr ""
+msgstr "Estado"
 
 #. module: connector
 #: field:connector.checkpoint,message_summary:0
@@ -646,7 +687,7 @@ msgstr ""
 #. module: connector
 #: field:queue.job,func_string:0
 msgid "Task"
-msgstr ""
+msgstr "Tarea"
 
 #. module: connector
 #: help:queue.job,max_retries:0
@@ -658,6 +699,11 @@ msgstr ""
 #. module: connector
 #: help:connector.checkpoint,backend_id:0
 msgid "The record has been imported from this backend"
+msgstr ""
+
+#. module: connector
+#: help:connector.checkpoint,record:0
+msgid "The record to review."
 msgstr ""
 
 #. module: connector
@@ -689,7 +735,7 @@ msgstr ""
 #: field:connector.checkpoint,message_unread:0
 #: field:queue.job,message_unread:0
 msgid "Unread Messages"
-msgstr ""
+msgstr "Mensajes sin leer"
 
 #. module: connector
 #: field:connector.config.settings,module_auth_oauth:0
@@ -737,7 +783,7 @@ msgstr ""
 #: view:connector.config.settings:connector.view_connector_config_settings
 #: view:queue.requeue.job:connector.view_requeue_job
 msgid "or"
-msgstr ""
+msgstr "ó"
 
 #. module: connector
 #: view:connector.checkpoint:connector.view_connector_checkpoint_form

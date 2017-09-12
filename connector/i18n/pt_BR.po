@@ -5,13 +5,15 @@
 # Translators:
 # danimaribeiro <danimaribeiro@gmail.com>, 2015
 # danimaribeiro <danimaribeiro@gmail.com>, 2015
+# Hotellook, 2014
+# Rodrigo de Almeida Sottomaior Macedo <rmsolucoeseminformatic4@gmail.com>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: connector (8.0)\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-16 06:23+0000\n"
-"PO-Revision-Date: 2015-10-15 13:38+0000\n"
-"Last-Translator: OCA Transbot <transbot@odoo-community.org>\n"
+"POT-Creation-Date: 2017-05-01 16:08+0000\n"
+"PO-Revision-Date: 2017-05-18 19:18+0000\n"
+"Last-Translator: Rodrigo de Almeida Sottomaior Macedo <rmsolucoeseminformatic4@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/oca/OCA-connector-8-0/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -92,19 +94,19 @@ msgid "Cancel"
 msgstr "Cancelar"
 
 #. module: connector
-#: code:addons/connector/queue/job.py:574
+#: code:addons/connector/queue/job.py:619
 #, python-format
 msgid "Canceled. Nothing to do."
 msgstr "Cancelado. Nada a se fazer"
 
 #. module: connector
-#: code:addons/connector/queue/model.py:457
+#: code:addons/connector/queue/model.py:462
 #, python-format
 msgid "Cannot change the root channel"
 msgstr "Não pode modificar o canal principal"
 
 #. module: connector
-#: code:addons/connector/queue/model.py:464
+#: code:addons/connector/queue/model.py:469
 #, python-format
 msgid "Cannot remove the root channel"
 msgstr "Não pode remover o canal principal"
@@ -249,6 +251,18 @@ msgstr "Data da última mensagem postada no registro"
 #: field:queue.job,name:0
 msgid "Description"
 msgstr "Descrição"
+
+#. module: connector
+#: field:connector.backend,display_name:0
+#: field:connector.checkpoint,display_name:0
+#: field:connector.checkpoint.review,display_name:0
+#: field:connector.config.settings,display_name:0
+#: field:external.binding,display_name:0 field:queue.job,display_name:0
+#: field:queue.job.channel,display_name:0
+#: field:queue.job.function,display_name:0
+#: field:queue.requeue.job,display_name:0 field:queue.worker,display_name:0
+msgid "Display Name"
+msgstr "Nome para Mostrar"
 
 #. module: connector
 #: view:queue.job:connector.view_queue_job_search selection:queue.job,state:0
@@ -411,6 +425,18 @@ msgid "Last Message Date"
 msgstr "Última data de mensagem"
 
 #. module: connector
+#: field:connector.backend,__last_update:0
+#: field:connector.checkpoint,__last_update:0
+#: field:connector.checkpoint.review,__last_update:0
+#: field:connector.config.settings,__last_update:0
+#: field:external.binding,__last_update:0 field:queue.job,__last_update:0
+#: field:queue.job.channel,__last_update:0
+#: field:queue.job.function,__last_update:0
+#: field:queue.requeue.job,__last_update:0 field:queue.worker,__last_update:0
+msgid "Last Modified on"
+msgstr "Última atualização em"
+
+#. module: connector
 #: field:connector.checkpoint,write_uid:0
 #: field:connector.checkpoint.review,write_uid:0
 #: field:connector.config.settings,write_uid:0
@@ -470,6 +496,11 @@ msgid "Name"
 msgstr "Nome"
 
 #. module: connector
+#: help:connector.checkpoint,name:0
+msgid "Name of the record to review"
+msgstr "Nome do registro a ser revisado"
+
+#. module: connector
 #: view:connector.checkpoint:connector.view_connector_checkpoint_search
 #: selection:connector.checkpoint,state:0
 msgid "Need Review"
@@ -497,7 +528,7 @@ msgid "Parent Channel"
 msgstr "Canal pai"
 
 #. module: connector
-#: code:addons/connector/queue/model.py:449
+#: code:addons/connector/queue/model.py:454
 #, python-format
 msgid "Parent channel required."
 msgstr "Canal pai é obrigatório"
@@ -533,9 +564,19 @@ msgid "Queue Worker"
 msgstr "Fila de trabalho"
 
 #. module: connector
+#: field:connector.checkpoint,record:0
+msgid "Record"
+msgstr "Registro"
+
+#. module: connector
 #: field:connector.checkpoint,record_id:0
 msgid "Record ID"
 msgstr "ID do registro"
+
+#. module: connector
+#: field:connector.checkpoint,name:0
+msgid "Record Name"
+msgstr "Nome de Registro"
 
 #. module: connector
 #: view:queue.job:connector.view_queue_job_form
@@ -611,7 +652,7 @@ msgid "Share or embbed any screen of Odoo."
 msgstr "Compartilhe ou incorpore qualquer tela do Odoo"
 
 #. module: connector
-#: code:addons/connector/queue/model.py:187
+#: code:addons/connector/queue/model.py:192
 #, python-format
 msgid ""
 "Something bad happened during the execution of the job. More details in the "
@@ -660,6 +701,11 @@ msgstr "A tarefa vai falhar quando o número de tentativas chegar ao limite\nTen
 #: help:connector.checkpoint,backend_id:0
 msgid "The record has been imported from this backend"
 msgstr "O registro foi importado deste backend"
+
+#. module: connector
+#: help:connector.checkpoint,record:0
+msgid "The record to review."
+msgstr "O registro a ser revisado."
 
 #. module: connector
 #: view:connector.checkpoint.review:connector.view_connector_checkpoint_review
