@@ -43,7 +43,8 @@ class AccountVoucher(models.Model):
         list_move_line = []
         ded_amount = 0.00
         write_off_name = ''
-        if not current_currency_obj.is_zero(line_total):
+        if not current_currency_obj.is_zero(line_total) or \
+                self._context.get('force_run_writeoff'):
             diff = line_total
             account_id = False
             if voucher_brw.payment_option == 'with_writeoff':
