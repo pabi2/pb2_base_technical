@@ -1,0 +1,5 @@
+.graph_main_content table:not(.heatmap) td:hover:not(:first-child)
+{
+  cursor: pointer;
+  color: #428bca;
+}
