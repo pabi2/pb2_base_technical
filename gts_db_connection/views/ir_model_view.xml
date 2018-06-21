@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="view_model_form_inherit_gts">
+            <field name="name">ir.model.form.inherit</field>
+            <field name="model">ir.model</field>
+            <field name="inherit_id" ref="base.view_model_form"/>
+            <field name="arch" type="xml">
+                <field name="modules" position="after">
+                    <field name="connection_id" options="{'no_create': True}"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_model_tree_inherit_gts" model="ir.ui.view">
+            <field name="name">ir.model.tree.inherit</field>
+            <field name="model">ir.model</field>
+            <field name="inherit_id" ref="base.view_model_tree"/>
+            <field name="arch" type="xml">
+                <field name="osv_memory" position="after">
+                    <field name="connection_id"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_model_search_inherit_gts" model="ir.ui.view">
+            <field name="name">ir.model.search.inherit</field>
+            <field name="model">ir.model</field>
+            <field name="inherit_id" ref="base.view_model_search"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="connection_id"/>
+                    <filter string="Connection" icon="terp-stock_align_left_24" domain="[]"
+                            context="{'group_by': 'connection_id'}"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>

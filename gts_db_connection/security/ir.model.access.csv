@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ir_model_all_user,ir_model.user,base.model_ir_model,,1,0,0,0
+access_db_connection_user,db_connection.user,gts_db_connection.model_db_connection,,1,0,0,0
+access_db_connection_manager,db_connection.manager,gts_db_connection.model_db_connection,base.group_system,1,1,1,1

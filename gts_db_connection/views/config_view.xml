@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="db_connection_form">
+            <field name="name">db.connection.form</field>
+            <field name="model">db.connection</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="DB Connection">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="host"/>
+                                <!--<field name="user"/>-->
+                            </group>
+                            <group>
+                                <field name="active"/>
+                                <field name="database"/>
+                                <!--<field name="password" password="True"/>-->
+                            </group>
+                        </group>
+                        <group>
+                            <field name="description" colspan="4"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="db_connection_tree">
+            <field name="name">db.connection.tree</field>
+            <field name="model">db.connection</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="DB Connection">
+                    <field name="name"/>
+                    <field name="host"/>
+                    <field name="database"/>
+                    <!--<field name="user"/>-->
+                </tree>
+            </field>
+        </record>
+
+        <record id="db_connection_action" model="ir.actions.act_window">
+            <field name="name">DB Connection</field>
+            <field name="res_model">db.connection</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="db_connection_tree"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to add a new DB Connection.
+              </p>
+            </field>
+        </record>
+
+        <menuitem id="sub_menu_db_connection" action="db_connection_action"
+                  parent="base.menu_custom" sequence="10"/>
+
+    </data>
+</openerp>

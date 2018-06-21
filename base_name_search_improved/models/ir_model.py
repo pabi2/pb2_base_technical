@@ -8,7 +8,7 @@ from openerp import tools
 
 
 # Extended name search is only used on some operators
-ALLOWED_OPS = set(['ilike', 'like','='])
+ALLOWED_OPS = set(['ilike', 'like', '='])
 
 
 @tools.ormcache(skiparg=0)
@@ -22,6 +22,17 @@ def _get_rec_names(self):
 
 
 def _extend_name_results(self, domain, results, limit):
+    # Make sure, id is searchable (remove here, if not needed)
+    domain2 = domain
+    domain = []
+    for dom in domain2:
+        if dom[0] == 'id' and dom[2] and isinstance(dom[2], basestring):
+            if dom[2].isdigit():
+                dom = (dom[0], '=', int(dom[2]))
+            else:
+                dom = (dom[0], '=', 0)
+        domain.append(dom)
+    # --
     result_count = len(results)
     if result_count < limit:
         domain += [('id', 'not in', [x[0] for x in results])]
