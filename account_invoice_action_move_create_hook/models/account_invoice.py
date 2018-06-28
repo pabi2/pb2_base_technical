@@ -118,7 +118,8 @@ class AccountInvoice(models.Model):
                         'name': name,
                         'price': t[1],
                         'account_id': inv.account_id.id,
-                        'date_maturity': t[0],
+                        'date_maturity': inv.date_due or t[0],  # kittiu
+                        # 'date_maturity': t[0]
                         'amount_currency': diff_currency and amount_currency,
                         'currency_id': diff_currency and inv.currency_id.id,
                         'ref': ref,
