@@ -12,12 +12,13 @@
                             <group>
                                 <field name="name"/>
                                 <field name="host"/>
-                                <!--<field name="user"/>-->
+                                <field name="user"/>
+                                <field name="port"/>
                             </group>
                             <group>
                                 <field name="active"/>
                                 <field name="database"/>
-                                <!--<field name="password" password="True"/>-->
+                                <field name="password" password="True"/>
                             </group>
                         </group>
                         <group>
@@ -37,7 +38,7 @@
                     <field name="name"/>
                     <field name="host"/>
                     <field name="database"/>
-                    <!--<field name="user"/>-->
+                    <field name="user"/>
                 </tree>
             </field>
         </record>

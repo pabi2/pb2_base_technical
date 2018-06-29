@@ -4,7 +4,7 @@ from openerp import models, fields
 
 
 class IRModel(models.Model):
-    _inherit= 'ir.model'
+    _inherit = 'ir.model'
 
     connection_id = fields.Many2one('db.connection', 'Connection',
                                     help='Select database connection to fetch from')
