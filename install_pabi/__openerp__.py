@@ -62,7 +62,7 @@
         'sale_invoice_plan_operating_unit',
         'sale_operating_unit',
         'sale_stock_operating_unit',
-        'stock_account_operating_unit',
+        # 'stock_account_operating_unit',
         'stock_operating_unit',
         'stock_request_operating_unit',
         # === Generic
