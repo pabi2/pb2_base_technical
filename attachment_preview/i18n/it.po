@@ -3,19 +3,19 @@
 # * attachment_preview
 # 
 # Translators:
-# Rudolf Schnapka <rs@techno-flex.de>, 2015
+# Paolo Valier, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: knowledge (8.0)\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-12-08 08:32+0000\n"
-"PO-Revision-Date: 2015-11-25 09:41+0000\n"
-"Last-Translator: Rudolf Schnapka <rs@techno-flex.de>\n"
-"Language-Team: German (http://www.transifex.com/oca/OCA-knowledge-8-0/language/de/)\n"
+"POT-Creation-Date: 2016-03-05 11:50+0000\n"
+"PO-Revision-Date: 2016-03-13 16:56+0000\n"
+"Last-Translator: Paolo Valier\n"
+"Language-Team: Italian (http://www.transifex.com/oca/OCA-knowledge-8-0/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
-"Language: de\n"
+"Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: attachment_preview
@@ -25,4 +25,4 @@ msgstr ""
 #: code:addons/attachment_preview/static/src/js/attachment_preview.js:228
 #, python-format
 msgid "Preview %s"
-msgstr "Vorschau %s"
+msgstr "Anteprima %s"

@@ -190,6 +190,7 @@ class AccountInvoice(models.Model):
             # used if you want to get the same
             # account move reference when creating the
             # same invoice after a cancelled one:
-            move.post()
+            if move.state != 'posted':
+                move.post()
         self._log_event()
         return True

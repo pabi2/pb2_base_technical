@@ -136,7 +136,7 @@ class AccountVoucher(models.Model):
             # HOOK
             voucher = self._finalize_voucher(voucher)
             # --
-            if voucher.journal_id.entry_posted:
+            if voucher.journal_id.entry_posted and move.state != 'posted':
                 move.post()
             # We automatically reconcile the account move lines.
             # reconcile = False (not in use when refactor)

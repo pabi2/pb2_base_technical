@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
+
         <record model="ir.ui.view" id="db_connection_form">
             <field name="name">db.connection.form</field>
             <field name="model">db.connection</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="DB Connection">
+                    <header>
+                        <button name="test_connection" string="Test Connection" type="object"
+                                class="oe_highlight"/>
+                    </header>
                     <sheet>
                         <group>
                             <group>

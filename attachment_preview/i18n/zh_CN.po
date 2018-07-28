@@ -3,20 +3,20 @@
 # * attachment_preview
 # 
 # Translators:
-# Rudolf Schnapka <rs@techno-flex.de>, 2015
+# ITGeeker <alanljj@qq.com>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: knowledge (8.0)\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-12-08 08:32+0000\n"
-"PO-Revision-Date: 2015-11-25 09:41+0000\n"
-"Last-Translator: Rudolf Schnapka <rs@techno-flex.de>\n"
-"Language-Team: German (http://www.transifex.com/oca/OCA-knowledge-8-0/language/de/)\n"
+"POT-Creation-Date: 2016-07-31 02:38+0000\n"
+"PO-Revision-Date: 2017-04-19 01:16+0000\n"
+"Last-Translator: ITGeeker <alanljj@qq.com>\n"
+"Language-Team: Chinese (China) (http://www.transifex.com/oca/OCA-knowledge-8-0/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
-"Language: de\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: attachment_preview
 #. openerp-web
@@ -25,4 +25,4 @@ msgstr ""
 #: code:addons/attachment_preview/static/src/js/attachment_preview.js:228
 #, python-format
 msgid "Preview %s"
-msgstr "Vorschau %s"
+msgstr "预览 %s"

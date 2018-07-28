@@ -8,7 +8,7 @@ from openerp.http import request
 from openerp import sql_db
 
 import logging
-_logger = logging.getLogger(__name__)
+_logger = logging.getLogger('DB Connection')
 _Pool = None
 
 
@@ -41,7 +41,8 @@ class DataSetInherit(openerp.addons.web.controllers.main.DataSet):
     def _call_kw(self, model, method, args, kwargs):
         if method.startswith('_'):
             raise Exception(
-                "Access Denied: Underscore prefixed methods cannot be remotely called")
+                "Access Denied: Underscore prefixed methods cannot be "
+                "remotely called")
 
         model_obj = request.env['ir.model']
         model_rec = model_obj.sudo().search([('model', '=', model)], limit=1)
@@ -54,9 +55,12 @@ class DataSetInherit(openerp.addons.web.controllers.main.DataSet):
                 result = getattr(request.registry.get(model), method)(
                     new_cr, request.uid, *args, **kwargs)
                 new_cr.close()
+                _logger.info(
+                    '++++++++ Connection to the database %s is successful'
+                    % (model_rec.connection_id.database,))
                 return result
             except Exception, e:
-                _logger.warning(
+                _logger.exception(
                     'Exception in connection with other database: %s.', e.args)
                 return getattr(request.registry.get(model), method)(
                     request.cr, request.uid, *args, **kwargs)
