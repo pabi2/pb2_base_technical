@@ -339,6 +339,8 @@ class ConnectorRunner(object):
         print '9999999999999'
         print self.db_by_name.values()
         for db in self.db_by_name.values():
+            print db.db_name
+        for db in self.db_by_name.values():
             while db.conn.notifies:
                 if self._stop:
                     break
