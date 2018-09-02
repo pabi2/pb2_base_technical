@@ -312,6 +312,7 @@ class ConnectorRunner(object):
         self.db_by_name = {}
 
     def initialize_databases(self):
+        x = 1/0
         for db_name in self.get_db_names():
             db = Database(db_name)
             if not db.has_connector:
