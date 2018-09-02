@@ -289,6 +289,8 @@ class ConnectorRunner(object):
         self._stop_pipe = os.pipe()
 
     def get_db_names(self):
+        _logger.debug('-----------------------')
+        _logger.debug(openerp.service.db.exp_list(True))
         if openerp.tools.config['db_name']:
             db_names = openerp.tools.config['db_name'].split(',')
         else:
@@ -296,8 +298,8 @@ class ConnectorRunner(object):
         dbfilter = openerp.tools.config['dbfilter']
         if dbfilter and '%d' not in dbfilter and '%h' not in dbfilter:
             db_names = [d for d in db_names if re.match(dbfilter, d)]
-        print 'XXXXXXXXXXXXXXXXXXXXXXXXXX'
-        print db_names
+
+        _logger.debug('get_db_names()-%s' % db_names)
         return db_names
 
     def close_databases(self, remove_jobs=True):
