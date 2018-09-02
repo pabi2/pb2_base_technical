@@ -206,6 +206,8 @@ class ChannelJob(object):
 
     def __init__(self, db_name, channel, uuid,
                  seq, date_created, priority, eta):
+        print 'zzzzzzzzzzzzzzzzzzzzzzz'
+        print db_name
         self.db_name = db_name
         self.channel = channel
         self.uuid = uuid
