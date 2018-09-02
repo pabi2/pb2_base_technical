@@ -286,6 +286,9 @@ class WorkerWatcher(threading.Thread):
                 else:
                     if cr.fetchone():
                         available_db_names.append(db_name)
+        print 'yyyyyyyyyyyyyyy'
+        print available_db_names
+        print 'yyyyyyyyyyyyyy'
         return available_db_names
 
     def _update_workers(self):
