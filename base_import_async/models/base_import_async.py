@@ -82,7 +82,8 @@ def _read_csv_attachment(session, att_id, options):
                         delimiter=str(options.get(OPT_SEPARATOR)),
                         quotechar=str(options.get(OPT_QUOTING)))
     encoding = options.get(OPT_ENCODING, 'utf-8')
-    fields = _decode(reader.next(), encoding)
+    # fields = _decode(reader.next(), encoding)
+    fields = reader.next()
     data = [_decode(row, encoding) for row in reader]
     return fields, data
 
