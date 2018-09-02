@@ -289,7 +289,7 @@ class ConnectorRunner(object):
         self._stop_pipe = os.pipe()
 
     def get_db_names(self):
-        _logger.debug('-----------------------')
+        _logger.debug('-----------------------db_name:%s' % openerp.tools.config['db_name'])
         _logger.debug(openerp.service.db.exp_list(True))
         if openerp.tools.config['db_name']:
             db_names = openerp.tools.config['db_name'].split(',')
