@@ -289,6 +289,9 @@ class ConnectorRunner(object):
         self._stop_pipe = os.pipe()
 
     def get_db_names(self):
+        print '------------------------------'
+        print openerp.tools.config['db_name']
+        print '------------------------------'
         if openerp.tools.config['db_name']:
             db_names = openerp.tools.config['db_name'].split(',')
         else:
@@ -322,11 +325,7 @@ class ConnectorRunner(object):
 
     def run_jobs(self):
         now = openerp.fields.Datetime.now()
-        print self.channel_manager.get_jobs_to_run(now)
         for job in self.channel_manager.get_jobs_to_run(now):
-            print job
-            print job.uuid
-            print '-----------"%s"' % job.db_name
             if self._stop:
                 break
             _logger.info("asking Odoo to run job %s on db %s",
