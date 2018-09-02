@@ -289,17 +289,15 @@ class ConnectorRunner(object):
         self._stop_pipe = os.pipe()
 
     def get_db_names(self):
-        _logger.debug('-----------------------db_name:%s' % openerp.tools.config['db_name'])
-        _logger.debug(openerp.service.db.exp_list(True))
         if openerp.tools.config['db_name']:
             db_names = openerp.tools.config['db_name'].split(',')
+            # kittiu, ensure database name has no space
+            db_names = [x.strip() for x in db_names]
         else:
             db_names = openerp.service.db.exp_list(True)
         dbfilter = openerp.tools.config['dbfilter']
         if dbfilter and '%d' not in dbfilter and '%h' not in dbfilter:
             db_names = [d for d in db_names if re.match(dbfilter, d)]
-
-        _logger.debug('get_db_names()-%s' % db_names)
         return db_names
 
     def close_databases(self, remove_jobs=True):
@@ -314,8 +312,6 @@ class ConnectorRunner(object):
         self.db_by_name = {}
 
     def initialize_databases(self):
-        _logger.debug('initialize_databases()-%s' % self.get_db_names())
-        x = 1/0
         for db_name in self.get_db_names():
             db = Database(db_name)
             if not db.has_connector:
