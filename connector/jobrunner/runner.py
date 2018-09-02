@@ -312,8 +312,7 @@ class ConnectorRunner(object):
         self.db_by_name = {}
 
     def initialize_databases(self):
-        print 'initialize_databases()'
-        print self.get_db_names()
+        _logger.debug('initialize_databases()-%s' % self.get_db_names())
         x = 1/0
         for db_name in self.get_db_names():
             db = Database(db_name)
