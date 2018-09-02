@@ -77,15 +77,11 @@ def _create_csv_attachment(session, fields, data, options, file_name):
 
 def _read_csv_attachment(session, att_id, options):
     att = session.env['ir.attachment'].browse(att_id)
-    print att
     f = StringIO(att.datas.decode('base64'))
-    print f
     reader = csv.reader(f,
                         delimiter=str(options.get(OPT_SEPARATOR)),
                         quotechar=str(options.get(OPT_QUOTING)))
     encoding = options.get(OPT_ENCODING, 'utf-8')
-    print reader
-    print reader.next()
     fields = _decode(reader.next(), encoding)
     data = [_decode(row, encoding) for row in reader]
     return fields, data
