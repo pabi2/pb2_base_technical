@@ -322,7 +322,11 @@ class ConnectorRunner(object):
 
     def run_jobs(self):
         now = openerp.fields.Datetime.now()
+        print self.channel_manager.get_jobs_to_run(now)
         for job in self.channel_manager.get_jobs_to_run(now):
+            print job
+            print job.uuid
+            print '-----------"%s"' % job.db_name
             if self._stop:
                 break
             _logger.info("asking Odoo to run job %s on db %s",
