@@ -76,10 +76,14 @@ class WorkerConnector(workers.Worker):
 
     def process_work(self):
         with openerp.api.Environment.manage():
+            print 'xxxxxxxxxxxxxxxxxxxx'
+            print config['db_name']
             if config['db_name']:
                 db_names = config['db_name'].split(',')
             else:
                db_names = openerp.service.db.exp_list(True)
+            print db_names
+            print 'xxxxxxxxxxxxxxxx'
             dbfilter = config['dbfilter']
             if dbfilter and db_names:
                 db_names = [d for d in db_names if re.match(dbfilter, d)]
