@@ -289,9 +289,6 @@ class ConnectorRunner(object):
         self._stop_pipe = os.pipe()
 
     def get_db_names(self):
-        print '------------------------------'
-        print openerp.tools.config['db_name']
-        print '------------------------------'
         if openerp.tools.config['db_name']:
             db_names = openerp.tools.config['db_name'].split(',')
         else:
@@ -313,8 +310,6 @@ class ConnectorRunner(object):
         self.db_by_name = {}
 
     def initialize_databases(self):
-        print 'kkkkkkkkkkkkkkkkk'
-        print self.get_db_names()
         for db_name in self.get_db_names():
             db = Database(db_name)
             if not db.has_connector:
@@ -336,10 +331,6 @@ class ConnectorRunner(object):
             _async_http_get(self.port, job.db_name, job.uuid)
 
     def process_notifications(self):
-        print '9999999999999'
-        print self.db_by_name.values()
-        for db in self.db_by_name.values():
-            print db.db_name
         for db in self.db_by_name.values():
             while db.conn.notifies:
                 if self._stop:
