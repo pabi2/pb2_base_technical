@@ -44,8 +44,10 @@ class AccountInvoice(models.Model):
 
             company_currency = inv.company_id.currency_id
             # create the analytical lines, one move line per invoice line
+            # TODO:Performance 0.17 seconds
             iml = inv._get_analytic_lines()
             # check if taxes are all computed
+            # TODO:Performance 0.17 seconds
             compute_taxes = account_invoice_tax.\
                 compute(inv.with_context(lang=inv.partner_id.lang))
             inv.check_tax_lines(compute_taxes)
@@ -176,8 +178,8 @@ class AccountInvoice(models.Model):
             ctx['invoice'] = inv
             ctx_nolang = ctx.copy()
             ctx_nolang.pop('lang', None)
+            # TODO:Performance 1.5 seconds
             move = account_move.with_context(ctx_nolang).create(move_vals)
-
             # make the invoice point to that move
             vals = {
                 'move_id': move.id,
