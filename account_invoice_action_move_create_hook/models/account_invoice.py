@@ -38,10 +38,6 @@ class AccountInvoice(models.Model):
             ctx = dict(self._context, lang=inv.partner_id.lang)
 
             if not inv.date_invoice:
-                print '=================='
-                print fields.Date.context_today(self)
-                print ctx
-                print inv
                 inv.with_context(ctx).write({
                     'date_invoice': fields.Date.context_today(self)})
             date_invoice = inv.date_invoice
