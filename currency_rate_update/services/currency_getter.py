@@ -72,10 +72,13 @@ class Currency_getter_factory():
             'CA_BOC_getter',
             'RO_BNR_getter',
         ]
+
+        print '-------------------general_register -- %s' % class_name
         if class_name in allowed:
             exec "from .update_service_%s import %s" % \
                  (class_name.replace('_getter', ''), class_name)
             class_def = eval(class_name)
             return class_def()
         else:
+            print '---------------------not allow --'
             raise UnknowClassError
