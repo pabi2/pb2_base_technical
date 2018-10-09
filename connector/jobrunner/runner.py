@@ -212,6 +212,10 @@ class Database(object):
 
     def __init__(self, db_name):
         self.db_name = db_name
+
+        print '-----INIT-----'
+        print openerp.sql_db.dsn(db_name)[1]
+
         self.conn = psycopg2.connect(openerp.sql_db.dsn(db_name)[1])
         self.conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         self.has_connector = self._has_connector()
