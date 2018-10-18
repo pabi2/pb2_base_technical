@@ -6,7 +6,10 @@
     'category': 'Accounting & Finance',
     'description': '''
 
-Add hook point in account_invoice_line._anglo_saxon_sale_move_lines()
+Add hook point in
+- account_invoice.line_get_convert()
+- account_invoice_line._anglo_saxon_sale_move_lines()
+- account_invoice_line.move_line_get_item()
 
 ''',
     'author': "Ecosoft",
