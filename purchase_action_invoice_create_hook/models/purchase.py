@@ -50,10 +50,11 @@ class PurchaseOrder(models.Model):
                                                        acc_id,
                                                        po_line,
                                                        context=context)
-                self._create_invoice_line(cr, uid,
-                                          inv_line_data,
-                                          inv_lines,
-                                          po_line, context=context)  # Hook
+                if inv_line_data:
+                    self._create_invoice_line(cr, uid,
+                                              inv_line_data,
+                                              inv_lines,
+                                              po_line, context=context)  # Hook
 
             # get invoice data and create invoice
             inv_data = self._prepare_invoice(cr, uid, order, inv_lines,
