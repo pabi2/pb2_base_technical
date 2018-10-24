@@ -55,11 +55,3 @@ class account_tax(models.Model):
             'total_included': totalin,
             'taxes': tin + tex
         }
-
-    # @api.v8
-    # def compute_all(self, price_unit, quantity, product=None,
-    #                 partner=None, force_excluded=False):
-    #     return self._model.compute_all(
-    #         self._cr, self._uid, self, price_unit, quantity,
-    #         product=product, partner=partner, force_excluded=force_excluded,
-    #         context=self._context)
