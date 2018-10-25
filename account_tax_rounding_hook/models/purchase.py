@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from openerp import models, api, fields
+import openerp.addons.decimal_precision as dp
 
 
 class purchase_order(models.Model):
@@ -9,19 +10,33 @@ class purchase_order(models.Model):
     _inherit = 'purchase.order'
 
     amount_untaxed = fields.Float(
+        string='Untaxed Amount',
         compute='_amount_all',
-        store=False,
+        digits_compute=dp.get_precision('Account'),
+        help="The amount without tax",
+        multi="sums",
+        track_visibility='always',
+        store=True,
     )
     amount_tax = fields.Float(
+        string='Taxes',
         compute='_amount_all',
-        store=False,
+        digits_compute=dp.get_precision('Account'),
+        help="The tax amount",
+        multi="sums",
+        store=True,
     )
     amount_total = fields.Float(
+        string='Total',
         compute='_amount_all',
-        store=False,
+        digits_compute=dp.get_precision('Account'),
+        help="The total amount",
+        multi="sums",
+        store=True,
     )
 
     @api.multi
+    @api.depends('order_line', 'rounding_method')
     def _amount_all(self):
         Line = self.env["purchase.order.line"]
         for order in self:
