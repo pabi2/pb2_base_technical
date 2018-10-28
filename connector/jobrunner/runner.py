@@ -157,7 +157,22 @@ def _async_http_get(port, db_name, job_uuid):
     # Method to set failed job (due to timeout, etc) as pending,
     # to avoid keeping it as enqueued.
     def set_job_pending():
-        conn = psycopg2.connect(openerp.sql_db.dsn(db_name)[1])
+        # kittiu
+        # conn = psycopg2.connect(openerp.sql_db.dsn(db_name)[1])
+        dsn = openerp.sql_db.dsn(db_name)[1]
+        _host = config.misc.get("options-connector", {}).get("db_master_host")
+        if _host:
+            if 'host' not in dsn:
+                dsn = 'host=%s %s' % (_host, dsn)
+            else:
+                new_param = []
+                for param in dsn.split(' '):
+                    if 'host' in param:
+                        param = 'host=%s' % _host
+                    new_param.append(param)
+                dsn = ' '.join(new_param)
+        conn = psycopg2.connect(dsn)
+        # --
         conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         with closing(conn.cursor()) as cr:
             cr.execute(

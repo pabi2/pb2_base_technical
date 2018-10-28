@@ -72,6 +72,7 @@ class Currency_getter_factory():
             'CA_BOC_getter',
             'RO_BNR_getter',
         ]
+
         if class_name in allowed:
             exec "from .update_service_%s import %s" % \
                  (class_name.replace('_getter', ''), class_name)
