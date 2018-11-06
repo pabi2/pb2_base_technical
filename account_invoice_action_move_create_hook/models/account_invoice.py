@@ -192,7 +192,8 @@ class AccountInvoice(models.Model):
             # used if you want to get the same
             # account move reference when creating the
             # same invoice after a cancelled one:
-            if move.state != 'posted':
+            if move.state != 'posted' and \
+                    not self._context.get('is_clear_prepaid', False):  # COD
                 move.post()
         self._log_event()
         return True
