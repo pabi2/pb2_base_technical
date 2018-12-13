@@ -231,7 +231,6 @@ class AccountInvoiceLine(models.Model):
     def _anglo_saxon_sale_move_lines(self, i_line, res):
         """ Overwrite method, simpley to ensure that name is > 64 char """
         inv = i_line.invoice_id
-        fiscal_pool = self.env['account.fiscal.position']
         fpos = inv.fiscal_position or False
         company_currency = inv.company_id.currency_id.id
 
@@ -285,7 +284,8 @@ class AccountInvoiceLine(models.Model):
                             'quantity': i_line.quantity,
                             'price': -1 * self._get_price(
                                 inv, company_currency, i_line, price_unit),
-                            'account_id': fiscal_pool.map_account(fpos, cacc),
+                            'account_id':
+                            fpos and fpos.map_account(cacc) or cacc,
                             'product_id': i_line.product_id.id,
                             'uos_id': i_line.uos_id.id,
                             'account_analytic_id':
