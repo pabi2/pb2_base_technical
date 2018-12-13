@@ -263,34 +263,36 @@ class AccountInvoiceLine(models.Model):
                 to_unit = i_line.uos_id.id
                 price_unit = self.env['product.uom']._compute_price(
                     from_unit, price_unit, to_uom_id=to_unit)
-                return [
-                    {
-                        'type': 'src',
-                        'name': i_line.name,
-                        'price_unit': price_unit,
-                        'quantity': i_line.quantity,
-                        'price': self._get_price(inv, company_currency,
-                                                 i_line, price_unit),
-                        'account_id': dacc,
-                        'product_id': i_line.product_id.id,
-                        'uos_id': i_line.uos_id.id,
-                        'account_analytic_id': False,
-                        'taxes': i_line.invoice_line_tax_id,
-                    },
-                    {
-                        'type': 'src',
-                        'name': i_line.name,
-                        'price_unit': price_unit,
-                        'quantity': i_line.quantity,
-                        'price': -1 * self._get_price(inv, company_currency,
-                                                      i_line, price_unit),
-                        'account_id': fiscal_pool.map_account(fpos, cacc),
-                        'product_id': i_line.product_id.id,
-                        'uos_id': i_line.uos_id.id,
-                        'account_analytic_id': i_line.account_analytic_id.id,
-                        'taxes': i_line.invoice_line_tax_id,
-                    },
-                ]
+                if price_unit:  # only if price_unit > 0.0
+                    return [
+                        {
+                            'type': 'src',
+                            'name': i_line.name,
+                            'price_unit': price_unit,
+                            'quantity': i_line.quantity,
+                            'price': self._get_price(inv, company_currency,
+                                                     i_line, price_unit),
+                            'account_id': dacc,
+                            'product_id': i_line.product_id.id,
+                            'uos_id': i_line.uos_id.id,
+                            'account_analytic_id': False,
+                            'taxes': i_line.invoice_line_tax_id,
+                        },
+                        {
+                            'type': 'src',
+                            'name': i_line.name,
+                            'price_unit': price_unit,
+                            'quantity': i_line.quantity,
+                            'price': -1 * self._get_price(
+                                inv, company_currency, i_line, price_unit),
+                            'account_id': fiscal_pool.map_account(fpos, cacc),
+                            'product_id': i_line.product_id.id,
+                            'uos_id': i_line.uos_id.id,
+                            'account_analytic_id':
+                            i_line.account_analytic_id.id,
+                            'taxes': i_line.invoice_line_tax_id,
+                        },
+                    ]
         return []
 
     @api.model
