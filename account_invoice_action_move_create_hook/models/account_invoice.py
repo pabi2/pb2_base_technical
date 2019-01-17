@@ -262,7 +262,7 @@ class AccountInvoiceLine(models.Model):
                 to_unit = i_line.uos_id.id
                 price_unit = self.env['product.uom']._compute_price(
                     from_unit, price_unit, to_uom_id=to_unit)
-                if price_unit:  # only if price_unit > 0.0
+                if price_unit and dacc != cacc:  # only if price_unit > 0.0
                     return [
                         {
                             'type': 'src',
