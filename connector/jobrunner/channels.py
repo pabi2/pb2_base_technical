@@ -774,7 +774,7 @@ class ChannelManager(object):
                 job = None
         if not job:
             job = ChannelJob(db_name, channel, uuid,
-                             seq, date_created, priority, eta)
+                             seq, date_created, priority, eta, date_started)
             self._jobs_by_uuid[uuid] = job
         job.date_started = date_started
         # state transitions
