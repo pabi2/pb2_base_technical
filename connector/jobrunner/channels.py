@@ -438,11 +438,13 @@ class Channel(object):
                 conf_channels_list = channels_time_real.split(",")
                 for conf_list in conf_channels_list:
                     channel_name, channel_time = conf_list.split(":")
-                    if channel_name == str(job.channel):
+                    job_channel, xxx = str(job.channel).split("(")
+                    if channel_name == job_channel:
                         now = datetime.datetime.now()
-                        second_diff = (now-job.date_started).total_seconds()
+                        date_started = datetime.datetime.strptime(job.date_started, "%Y-%m-%d %H:%M:%S")
+                        second_diff = (now-date_started).total_seconds()
                         if second_diff > int(channel_time):
-                            self.set_failed(job)
+                            job.channel.set_failed(job)
                             _logger.debug("[==Job Timeout==] job %s marked failed in channel %s", job.uuid, self, exc_info=True)
     #---
     
