@@ -428,7 +428,7 @@ class Channel(object):
             _logger.debug("job %s marked running in channel %s",
                           job.uuid, self)
         else:
-            self.set_timeout(self, job)
+            self.set_timeout(job)
     
     # jakkrich.cha
     def set_timeout(self, job):
