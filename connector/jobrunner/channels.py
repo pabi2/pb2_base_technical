@@ -31,9 +31,6 @@ from ..exception import ChannelNotFound
 from ..queue.job import PENDING, ENQUEUED, STARTED, FAILED, DONE
 NOT_DONE = (PENDING, ENQUEUED, STARTED, FAILED)
 
-import openerp
-from openerp.tools import config
-import datetime
 _logger = logging.getLogger(__name__)
 
 
@@ -208,7 +205,7 @@ class ChannelJob(object):
     """
 
     def __init__(self, db_name, channel, uuid,
-                 seq, date_created, priority, eta, date_started):
+                 seq, date_created, priority, eta):
         self.db_name = db_name
         self.channel = channel
         self.uuid = uuid
@@ -216,7 +213,6 @@ class ChannelJob(object):
         self.date_created = date_created
         self.priority = priority
         self.eta = eta
-        self.date_started = date_started
 
     def __repr__(self):
         return "<ChannelJob %s>" % self.uuid
@@ -236,7 +232,6 @@ class ChannelJob(object):
             return (cmp(self.eta, other.eta) or
                     cmp(self.priority, other.priority) or
                     cmp(self.date_created, other.date_created) or
-                    cmp(self.date_started, other.date_started) or
                     cmp(self.seq, other.seq))
 
 
@@ -418,7 +413,6 @@ class Channel(object):
 
         This also marks the job as running in parent channels.
         """
-        #jakkrich.cha add else set_timeout
         if job not in self._running:
             self._queue.add(job)
             self._running.remove(job)
@@ -427,27 +421,7 @@ class Channel(object):
                 self.parent.set_running(job)
             _logger.debug("job %s marked running in channel %s",
                           job.uuid, self)
-        else:
-            self.set_timeout(job)
-    
-    # jakkrich.cha
-    def set_timeout(self, job):
-        if job.date_started:
-            channels_time_real = config.misc.get("options-connector", {}).get("channels_time_real")
-            if channels_time_real:
-                conf_channels_list = channels_time_real.split(",")
-                for conf_list in conf_channels_list:
-                    channel_name, channel_time = conf_list.split(":")
-                    job_channel, xxx = str(job.channel).split("(")
-                    if channel_name == job_channel:
-                        now = datetime.datetime.now()
-                        date_started = datetime.datetime.strptime(job.date_started, "%Y-%m-%d %H:%M:%S")
-                        second_diff = (now-date_started).total_seconds()
-                        if second_diff > int(channel_time):
-                            job.channel.set_failed(job)
-                            _logger.debug("[==Job Timeout==] job %s marked failed in channel %s", job.uuid, self, exc_info=True)
-    #---
-    
+
     def set_failed(self, job):
         """ Mark the job as failed. """
         if job not in self._failed:
@@ -456,8 +430,9 @@ class Channel(object):
             self._failed.add(job)
             if self.parent:
                 self.parent.remove(job)
-            _logger.debug("job %s marked failed in channel %s", job.uuid, self)
-            
+            _logger.debug("job %s marked failed in channel %s",
+                          job.uuid, self)
+
     def get_jobs_to_run(self, now):
         """ Get jobs that are ready to run in channel.
 
@@ -749,7 +724,7 @@ class ChannelManager(object):
         return parent
 
     def notify(self, db_name, channel_name, uuid,
-               seq, date_created, priority, eta, state, date_started):
+               seq, date_created, priority, eta, state):
         try:
             channel = self.get_channel_by_name(channel_name)
         except ChannelNotFound:
@@ -776,9 +751,8 @@ class ChannelManager(object):
                 job = None
         if not job:
             job = ChannelJob(db_name, channel, uuid,
-                             seq, date_created, priority, eta, date_started)
+                             seq, date_created, priority, eta)
             self._jobs_by_uuid[uuid] = job
-        job.date_started = date_started
         # state transitions
         if not state or state == DONE:
             job.channel.set_done(job)
