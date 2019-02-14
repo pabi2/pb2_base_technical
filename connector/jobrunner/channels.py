@@ -442,14 +442,10 @@ class Channel(object):
                         now = datetime.datetime.now()
                         second_diff = (now-job.date_started).total_seconds()
                         if second_diff > int(channel_time):
-                            self._queue.add(job)
-                            self._running.remove(job)
-                            self._failed.remove(job)
-                            _logger.debug("[==Job Timeout==] job %s marked running in channel %s again.",
-                                          job.uuid, self)
+                            self.set_failed(job, True)
     #---
     
-    def set_failed(self, job):
+    def set_failed(self, job, timeout=False):
         """ Mark the job as failed. """
         if job not in self._failed:
             self._queue.remove(job)
@@ -457,8 +453,10 @@ class Channel(object):
             self._failed.add(job)
             if self.parent:
                 self.parent.remove(job)
-            _logger.debug("job %s marked failed in channel %s",
-                          job.uuid, self)
+            if not timeout:
+                _logger.debug("job %s marked failed in channel %s", job.uuid, self)
+            else:
+                _logger.debug("[==Job Timeout==] job %s marked failed in channel %s", job.uuid, self, exc_info=True)
 
     def get_jobs_to_run(self, now):
         """ Get jobs that are ready to run in channel.
