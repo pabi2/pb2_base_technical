@@ -447,7 +447,8 @@ class Channel(object):
                             self._failed.remove(job)
                             _logger.debug("[==Job Timeout==] job %s marked running in channel %s again.",
                                           job.uuid, self)
-                    
+    #---
+    
     def set_failed(self, job):
         """ Mark the job as failed. """
         if job not in self._failed:
