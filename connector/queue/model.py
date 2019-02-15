@@ -133,7 +133,7 @@ class QueueJob(models.Model):
             elif state == PENDING:
                 job.set_pending(result=result)
             elif state == FAILED:
-                job.set_failed(result=result)
+                job.set_failed(exc_info=result)
             else:
                 raise ValueError('State not supported: %s' % state)
             storage.store(job)
