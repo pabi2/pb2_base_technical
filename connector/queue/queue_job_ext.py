@@ -20,12 +20,6 @@ class QueueJob(models.Model):
     """ Job status and result """
     _inherit = 'queue.job'
 
-    @api.multi
-    def set_timeout_failed(self):
-        result = _('[=Job Timeout=] set to failed by system')
-        self._change_job_state(FAILED, result=result)
-        return True
-
     @api.model
     def auto_check_timeout_queue_jobs(self):
         channels_time_real = config.misc.get("options-connector", {}).get("channels_time_real") or False
@@ -42,6 +36,7 @@ class QueueJob(models.Model):
                         date_started = datetime.strptime(job.date_started, "%Y-%m-%d %H:%M:%S")
                         second_diff = (now-date_started).total_seconds()
                         if second_diff > int(channel_time):
-                            _logger.debug("[==Job Timeout==] job %s marked failed in channel %s", job.uuid, job.channel)
-                            job.set_timeout_failed()
+                            result = _('Job Timeout more than %s s.' % channel_time)
+                            job._change_job_state(FAILED, result=result)
+                            _logger.debug("[==Job Timeout(%s s.)==] job %s marked failed in channel %s", channel_time, job.uuid, job.channel)
         return True
