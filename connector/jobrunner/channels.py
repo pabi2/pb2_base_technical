@@ -413,9 +413,10 @@ class Channel(object):
 
         This also marks the job as running in parent channels.
         """
+        # jakkrich.cha
         if job not in self._running:
-            self._queue.remove(job)
-            self._running.add(job)
+            self._queue.add(job)
+            self._running.remove(job)
             self._failed.remove(job)
             if self.parent:
                 self.parent.set_running(job)

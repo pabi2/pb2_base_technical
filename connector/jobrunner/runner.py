@@ -134,6 +134,8 @@ ERROR_RECOVERY_DELAY = 5
 
 _logger = logging.getLogger(__name__)
 
+sessions = {}
+
 
 # Unfortunately, it is not possible to extend the Odoo
 # server command line arguments, so we resort to environment variables
@@ -154,25 +156,20 @@ def _channels():
 
 
 def _async_http_get(port, db_name, job_uuid):
+    if not sessions.get(db_name):
+        sessions[db_name] = requests.Session()
+    session = sessions[db_name]
+    if not session.cookies:
+        # obtain an anonymous session
+        _logger.info("obtaining an anonymous session for the job runner")
+        url = 'http://localhost:%s/web/login?db=%s' % (port, db_name)
+        response = session.get(url, timeout=30)
+        response.raise_for_status()
+
     # Method to set failed job (due to timeout, etc) as pending,
     # to avoid keeping it as enqueued.
     def set_job_pending():
-        # kittiu
-        # conn = psycopg2.connect(openerp.sql_db.dsn(db_name)[1])
-        dsn = openerp.sql_db.dsn(db_name)[1]
-        _host = config.misc.get("options-connector", {}).get("db_master_host")
-        if _host:
-            if 'host' not in dsn:
-                dsn = 'host=%s %s' % (_host, dsn)
-            else:
-                new_param = []
-                for param in dsn.split(' '):
-                    if 'host' in param:
-                        param = 'host=%s' % _host
-                    new_param.append(param)
-                dsn = ' '.join(new_param)
-        conn = psycopg2.connect(dsn)
-        # --
+        conn = psycopg2.connect(openerp.sql_db.dsn(db_name)[1])
         conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         with closing(conn.cursor()) as cr:
             cr.execute(
@@ -190,7 +187,7 @@ def _async_http_get(port, db_name, job_uuid):
         try:
             # we are not interested in the result, so we set a short timeout
             # but not too short so we trap and log hard configuration errors
-            response = requests.get(url, timeout=1)
+            response = session.get(url, timeout=1)
 
             # raise_for_status will result in either nothing, a Client Error
             # for HTTP Response codes between 400 and 500 or a Server Error
@@ -200,6 +197,7 @@ def _async_http_get(port, db_name, job_uuid):
             set_job_pending()
         except:
             _logger.exception("exception in GET %s", url)
+            session.cookies.clear()
             set_job_pending()
     thread = threading.Thread(target=urlopen)
     thread.daemon = True
@@ -306,8 +304,6 @@ class ConnectorRunner(object):
     def get_db_names(self):
         if openerp.tools.config['db_name']:
             db_names = openerp.tools.config['db_name'].split(',')
-            # kittiu, ensure database name has no space
-            # db_names = [x.strip() for x in db_names]
         else:
             db_names = openerp.service.db.exp_list(True)
         dbfilter = openerp.tools.config['dbfilter']
@@ -395,10 +391,14 @@ class ConnectorRunner(object):
                     self.wait_notification()
             except KeyboardInterrupt:
                 self.stop()
-            except:
-                _logger.exception("exception: sleeping %ds and retrying",
-                                  ERROR_RECOVERY_DELAY)
-                self.close_databases()
-                time.sleep(ERROR_RECOVERY_DELAY)
+            except Exception as e:
+                # Interrupted system call, i.e. KeyboardInterrupt during select
+                if isinstance(e, select.error) and e[0] == 4:
+                    self.stop()
+                else:
+                    _logger.exception("exception: sleeping %ds and retrying",
+                                      ERROR_RECOVERY_DELAY)
+                    self.close_databases()
+                    time.sleep(ERROR_RECOVERY_DELAY)
         self.close_databases(remove_jobs=False)
         _logger.info("stopped")
