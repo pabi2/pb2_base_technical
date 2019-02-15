@@ -25,7 +25,7 @@ from datetime import datetime, timedelta
 
 from openerp import models, fields, api, exceptions, _
 
-from .job import STATES, DONE, PENDING, OpenERPJobStorage, JOB_REGISTRY
+from .job import STATES, DONE, PENDING, FAILED, ENQUEUED, STARTED, OpenERPJobStorage, JOB_REGISTRY
 from .worker import WORKER_TIMEOUT
 from ..session import ConnectorSession
 from .worker import watcher
@@ -132,6 +132,8 @@ class QueueJob(models.Model):
                 job.set_done(result=result)
             elif state == PENDING:
                 job.set_pending(result=result)
+            elif state == FAILED:
+                job.set_failed(result=result)
             else:
                 raise ValueError('State not supported: %s' % state)
             storage.store(job)

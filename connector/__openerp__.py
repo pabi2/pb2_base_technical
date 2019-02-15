@@ -39,6 +39,7 @@
           'connector_menu.xml',
           'setting_view.xml',
           'res_partner_view.xml',
+          'queue/job_timeout_data.xml',
           ],
  'installable': True,
  'application': True,
