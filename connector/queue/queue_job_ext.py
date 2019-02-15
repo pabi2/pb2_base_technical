@@ -38,7 +38,7 @@ class QueueJob(models.Model):
                 )
                 for job in jobs:
                     if job.channel == channel_name:
-                        now = datetime.datetime.now()
+                        now = datetime.now()
                         second_diff = (now-job.date_started).total_seconds()
                         if second_diff > int(channel_time):
                             _logger.debug("[==Job Timeout==] job %s marked failed in channel %s", job.uuid, job.channel)
