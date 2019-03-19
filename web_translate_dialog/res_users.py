@@ -10,7 +10,13 @@ class res_users(models.Model):
     def name_get(self):
         res = []
         for rec in self:
-            name = self.env['ir.translation'].search([['name','=','res.users,name'],['type','=','model'],['res_id','=',rec.partner_id.id]], limit=1)
+            # Fix for Responsible Show Thai Only
+            name = self.env['ir.translation'].search(
+                [['lang','=','th_TH'],
+                 ['name','=','res.partner,name'],
+                 ['type','=','model'],
+                 ['res_id','=',rec.partner_id.id]], limit=1
+            )
             if name:
                 res.append((rec.id, '%s' % (name.value)))
             else:
