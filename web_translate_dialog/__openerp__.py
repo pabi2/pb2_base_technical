@@ -26,7 +26,7 @@
  "author": "Camptocamp,Odoo Community Association (OCA)",
  "version": "8.0.1.0.0",
  "depends": ['web'],
- 'data': ['view/web_translate.xml'],
+ 'data': ['view/web_translate.xml','view/partner_view.xml'],
  'qweb': ["static/src/xml/base.xml"],
  'installable': True,
  }
