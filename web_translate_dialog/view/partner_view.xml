@@ -1,0 +1,10 @@
+<openerp>
+    <data>
+
+    	<record id="purchase.act_res_partner_2_supplier_invoices" model="ir.actions.act_window">
+            <field name="domain">[('type','=','in_invoice'),('partner_id','=',active_id)]</field>
+            <field name="context">{'default_type': 'in_invoice', 'type': 'in_invoice', 'journal_type': 'purchase'}</field>
+        </record>
+
+    </data>
+</openerp>
