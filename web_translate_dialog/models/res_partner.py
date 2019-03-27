@@ -16,8 +16,7 @@ class ResPartner(models.Model):
                 trans_search = trans.search([('lang','=','th_TH'),
                                             ('name','=',name),
                                             ('type','=','model'),
-                                            ('res_id', '=', l.id),
-                                            ('state','=','to_translate')], limit=1)
+                                            ('res_id', '=', l.id)], limit=1)
                 if trans_search:
                     lang = self._context.get('lang', False)
                     trans_src = trans_search.src.replace(" ", "")
