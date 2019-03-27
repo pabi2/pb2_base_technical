@@ -19,6 +19,7 @@ class ResPartner(models.Model):
                                             ('res_id', '=', l.id),
                                             ('state','=','to_translate')], limit=1)
                 if trans_search:
+                    lang = self._context.get('lang', False)
                     trans_src = trans_search.src.replace(" ", "")
                     trans_value = trans_search.value.replace(" ", "")
                     pattern = re.compile(r"[a-zA-Z]")
@@ -26,17 +27,21 @@ class ResPartner(models.Model):
                     char_src = re.findall(pattern, trans_src)
                     char_value = re.findall(pattern, trans_value)
                     
-                    update_src = False
+                    # Case Thai All
                     if not char_src and not char_value and not char_name:
-                        update_src = True
                         trans_search.write({
                             'value': vals['name'],
                             'src': vals['name']
                         })
-                    
-                    lang = self._context.get('lang', False)
-                    if lang == 'en_US' and not update_src:
-                        trans_search.write({
-                            'src': vals['name']
-                        })
+                    else:
+                        # Case en_US update 'src' away
+                        if lang == 'en_US':
+                            trans_search.write({
+                                'src': vals['name']
+                            })
+                            # name thai and value(old) thai >> update new value 
+                            if not char_name and not char_value:
+                                trans_search.write({
+                                'value': vals['name']
+                            })
         return res
