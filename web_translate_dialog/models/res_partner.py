@@ -35,14 +35,12 @@ class ResPartner(models.Model):
                         trans_search.write({
                             'value': vals['name'],
                             'src': vals['name'],
-                            'source': vals['name']
                         })
                     else:
                         # Case en_US update 'src' away
                         if lang == 'en_US':
                             trans_search.write({
                                 'src': vals['name'],
-                                'source': vals['name']
                             })
                             # name thai and value(old) thai >> update new value 
                             if not char_name and not char_value:
