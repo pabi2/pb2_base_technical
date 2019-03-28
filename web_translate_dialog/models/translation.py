@@ -47,11 +47,11 @@ class IRTranslation(models.Model):
                     write({'src': data[field_name], 'source': data[field_name]})
             
             
-            if context['lang'] == 'th_TH' and not char_name:
+            if trans_search and context['lang'] == 'th_TH' and not char_name:
                 trans_search.with_context(context).\
                     write({'value': data[field_name]})
-            if context['lang'] == 'th_TH' and not char_name and not char_src:
-                trans_search.with_context(context).\
+            if trans_search and context['lang'] == 'th_TH' and not char_name and not char_src:
+                trans_search.with_context(lang="en_US").\
                     write({'src': data[field_name], 'source': data[field_name]})
 
 
