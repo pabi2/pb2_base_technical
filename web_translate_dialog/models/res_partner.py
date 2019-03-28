@@ -8,10 +8,14 @@ class ResPartner(models.Model):
     @api.multi
     def write(self, vals):
         res = super(ResPartner, self).write(vals)
+        if self._context.get('transpass', False):
+            return res
         
         trans = self.env['ir.translation']
         for l in self:
             if 'name' in vals:
+                # l.with_context(transpass=True, lang="en_US").write({'name':vals['name']})
+                
                 name = "res.partner,name"
                 trans_search = trans.search([('lang','=','th_TH'),
                                             ('name','=',name),
