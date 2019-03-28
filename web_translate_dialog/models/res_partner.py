@@ -14,8 +14,6 @@ class ResPartner(models.Model):
         trans = self.env['ir.translation']
         for l in self:
             if 'name' in vals:
-                # l.with_context(transpass=True, lang="en_US").write({'name':vals['name']})
-                
                 name = "res.partner,name"
                 trans_search = trans.search([('lang','=','th_TH'),
                                             ('name','=',name),
@@ -32,6 +30,7 @@ class ResPartner(models.Model):
                     
                     # Case Thai All
                     if not char_src and not char_value and not char_name:
+                        l.with_context(transpass=True, lang="en_US").write({'name':vals['name']})
                         trans_search.write({
                             'value': vals['name'],
                             'src': vals['name'],
