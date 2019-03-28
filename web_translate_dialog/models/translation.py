@@ -44,7 +44,7 @@ class IRTranslation(models.Model):
                     write({'value': data[field_name]})
             elif trans_search and lang_code != context['lang']:
                 trans_search.with_context(context).\
-                    write({'source': data[field_name]})
+                    write({'src': data[field_name], 'source': data[field_name]})
             
             
             if context['lang'] == 'th_TH' and not char_name:
@@ -52,7 +52,7 @@ class IRTranslation(models.Model):
                     write({'value': data[field_name]})
             if context['lang'] == 'th_TH' and not char_name and not char_src:
                 trans_search.with_context(context).\
-                    write({'source': data[field_name]})
+                    write({'src': data[field_name], 'source': data[field_name]})
 
 
         return True
