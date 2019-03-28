@@ -39,7 +39,7 @@ class IRTranslation(models.Model):
                 trans_search.with_context(context).\
                     write({'src': data[field_name], 'source': data[field_name]})
             
-            trans_search = trans.search([('lang','=','th_TH'),
+            trans_search = self.search([('lang','=','th_TH'),
                                             ('name','=',name),
                                             ('type','=','model'),
                                             ('res_id', '=', res_id)])
