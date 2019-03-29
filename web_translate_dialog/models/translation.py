@@ -61,6 +61,13 @@ class IRTranslation(models.Model):
                         'src': data[field_name],
                         'source': data[field_name]
                     })
+            if trans_search and context['lang'] == 'th_TH' and char_name and char_src and char_value:
+                trans_search.with_context(lang="en_US").\
+                    write({
+                        'src': data[field_name],
+                        'source': data[field_name],
+                        'value': data[field_name]
+                    })
             if trans_search and context['lang'] == 'en_US' and char_name and char_src and char_value:
                 trans_search.with_context(lang="en_US").\
                     write({
