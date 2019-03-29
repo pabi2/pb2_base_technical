@@ -56,8 +56,6 @@ class IRTranslation(models.Model):
             if trans_search and context['lang'] == 'th_TH' and not char_name and not char_src:
                 trans_search.with_context(lang="en_US").\
                     write({'src': data[field_name], 'source': data[field_name]})
-                s = self.env[model].search(['id','=',res_id])
-                s.write({field_name: data[field_name]})
 
         return True
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
