@@ -42,8 +42,15 @@ class ResPartner(models.Model):
                                 'src': vals['name'],
                             })
                             # name thai and value(old) thai >> update new value 
-                            if not char_name and not char_value:
+                            if (not char_name and not char_value) or (char_name and char_value and char_src):
                                 trans_search.write({
                                 'value': vals['name']
+                            })
+                        elif lang == 'th_TH':
+                            if char_name and char_value and char_src:
+                                trans_search.write({
+                                'src': vals['name'],
+                                'source': vals['name'],
+                                'value': vals['name'],
                             })
         return res
