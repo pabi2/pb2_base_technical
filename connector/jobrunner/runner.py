@@ -169,7 +169,22 @@ def _async_http_get(port, db_name, job_uuid):
     # Method to set failed job (due to timeout, etc) as pending,
     # to avoid keeping it as enqueued.
     def set_job_pending():
-        conn = psycopg2.connect(openerp.sql_db.dsn(db_name)[1])
+        # conn = psycopg2.connect(openerp.sql_db.dsn(db_name)[1])
+        # jakkrich, fix pgpool
+        dsn = openerp.sql_db.dsn(db_name)[1]
+        _host = config.misc.get("options-connector", {}).get("host")
+        if _host:
+            if 'host' not in dsn:
+                dsn = 'host=%s %s' % (_host, dsn)
+            else:
+                new_param = []
+                for param in dsn.split(' '):
+                    if 'host' in param:
+                        param = 'host=%s' % _host
+                    new_param.append(param)
+                dsn = ' '.join(new_param)
+        conn = psycopg2.connect(dsn)
+        # --
         conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         with closing(conn.cursor()) as cr:
             cr.execute(
@@ -208,7 +223,21 @@ class Database(object):
 
     def __init__(self, db_name):
         self.db_name = db_name
-        self.conn = psycopg2.connect(openerp.sql_db.dsn(db_name)[1])
+        # self.conn = psycopg2.connect(openerp.sql_db.dsn(db_name)[1])
+        # jakkrich, fix pgpool
+        dsn = openerp.sql_db.dsn(db_name)[1]
+        _host = config.misc.get("options-connector", {}).get("host")
+        if _host:
+            if 'host' not in dsn:
+                dsn = 'host=%s %s' % (_host, dsn)
+            else:
+                new_param = []
+                for param in dsn.split(' '):
+                    if 'host' in param:
+                        param = 'host=%s' % _host
+                    new_param.append(param)
+                dsn = ' '.join(new_param)
+        self.conn = psycopg2.connect(dsn)
         self.conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         self.has_connector = self._has_connector()
         if self.has_connector:
@@ -304,6 +333,8 @@ class ConnectorRunner(object):
     def get_db_names(self):
         if openerp.tools.config['db_name']:
             db_names = openerp.tools.config['db_name'].split(',')
+            # jakkrich, ensure database name has no space
+            db_names = [x.strip() for x in db_names]
         else:
             db_names = openerp.service.db.exp_list(True)
         dbfilter = openerp.tools.config['dbfilter']
