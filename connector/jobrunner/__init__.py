@@ -80,9 +80,12 @@ class WorkerJobRunner(server.Worker):
         self.runner.stop()
 
     def process_work(self):
-        _logger.debug("WorkerJobRunner (%s) starting up", self.pid)
-        time.sleep(START_DELAY)
-        self.runner.run()
+        # Jakkrich.cha Edition
+        stop_job_runner = config.misc.get("options-connector", {}).get("stop_job_runner") or False
+        if not stop_job_runner:
+            _logger.debug("WorkerJobRunner (%s) starting up", self.pid)
+            time.sleep(START_DELAY)
+            self.runner.run()
 
 
 runner_thread = None

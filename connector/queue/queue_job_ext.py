@@ -23,7 +23,8 @@ class QueueJob(models.Model):
     @api.model
     def auto_check_timeout_queue_jobs(self):
         channels_time_real = config.misc.get("options-connector", {}).get("channels_time_real") or False
-        if channels_time_real:
+        stop_job_runner = config.misc.get("options-connector", {}).get("stop_job_runner") or False
+        if channels_time_real and not stop_job_runner:
             conf_channels_list = channels_time_real.split(",")
             for conf_list in conf_channels_list:
                 channel_name, channel_time = conf_list.split(":")
