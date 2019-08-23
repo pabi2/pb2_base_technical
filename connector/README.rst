@@ -51,11 +51,16 @@ also used with Solr, CMIS, ...
 	Add variables ``channels_time_real`` in openerp-server.conf after ``[options-connector]``, Should not be over variables ``limit_time_real``
 	If over time, system will notify error and stop working.
 	Format ``chanal_name:time_secord,chanal_name_2:time_secord``
-	Ex. ``root:3600,root.report:7200``
+	Ex. ``channels_time_real = root:3600,root.report:7200``
 
 * Fix Host Master PGpool (Jakkrich Edition)
     
     Add variables ``host`` in openerp-server.conf after ``[options-connector]``
+   
+* Add Feature Stop Worker Job Runner (Jakkrich Edition)
+  
+    Add variables ``stop_job_runner`` in openerp-server.conf after ``[options-connector]``
+    Ex. ``stop_job_runner = True``
     
 .. _Magento: http://odoo-magento-connector.com
 .. _Prestashop: https://github.com/OCA/connector-prestashop

@@ -1,6 +1,6 @@
 image: hub.nstda.or.th/bt/docker:ci.stable
 services: 
-  - docker:dind
+  - hub.nstda.or.th/bt/docker:dind.stable
 
 stages:
   - init
@@ -14,8 +14,7 @@ init:
   only:
     - tags
   tags: 
-    - o.nstda
-    - init
+    - o.nstda/init
 
 ####################################################################################
 ##### avariable to write the gitlab-ci for test your sourcecode in this table. #####
@@ -30,8 +29,7 @@ init:
 #  only:
 #    - tags
 #  tags:
-#    - o.nstda
-#    - test
+#    - o.nstda/test
 #
 ####################################################################################
 ####################################################################################
@@ -44,8 +42,7 @@ test-install:
   only:
     - tags
   tags:
-    - o.nstda
-    - test
+    - o.nstda/test
 
 deploy:
   stage: deploy
@@ -55,5 +52,4 @@ deploy:
   only:
     - tags
   tags:
-    - o.nstda
-    - deploy
+    - o.nstda/deploy
