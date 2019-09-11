@@ -11,7 +11,7 @@ Add hook point in account_invoice.action_move_create()
 ''',
     'author': "Ecosoft",
     'website': 'http://ecosoft.co.th',
-    'depends': ['account'],
+    'depends': ['account', 'account_anglo_saxon'],
     'data': [],
     'installable': True,
 }

@@ -21,3 +21,4 @@
 
 from . import model
 from . import worker
+from . import queue_job_ext

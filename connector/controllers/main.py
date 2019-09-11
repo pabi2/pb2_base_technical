@@ -2,7 +2,7 @@ import logging
 import traceback
 from cStringIO import StringIO
 
-from psycopg2 import OperationalError
+from psycopg2 import OperationalError, InternalError, errorcodes
 
 import openerp
 from openerp import http, tools
@@ -20,7 +20,7 @@ from ..exception import (NoSuchJobError,
 _logger = logging.getLogger(__name__)
 
 PG_RETRY = 5  # seconds
-
+PG_INTERNAL_ERRORS_TO_RETRY = [errorcodes.IN_FAILED_SQL_TRANSACTION]
 
 # TODO: perhaps the notion of ConnectionSession is less important
 #       now that we are running jobs inside a normal Odoo worker
@@ -71,6 +71,7 @@ class RunJobController(http.Controller):
     @http.route('/connector/runjob', type='http', auth='none')
     def runjob(self, db, job_uuid, **kw):
 
+        http.request.session._db = db
         session_hdl = ConnectorSessionHandler(db,
                                               openerp.SUPERUSER_ID)
 
@@ -80,6 +81,11 @@ class RunJobController(http.Controller):
                 job.set_pending(reset_retry=False)
                 self.job_storage_class(session).store(job)
 
+        def clear_env(env):
+            """ Clear any dangling recomputations from failed job """
+            env.clear_recompute_old()
+            env.all.todo.clear()
+
         with session_hdl.session() as session:
             job = self._load_job(session, job_uuid)
             if job is None:
@@ -88,15 +94,17 @@ class RunJobController(http.Controller):
         try:
             try:
                 self._try_perform_job(session_hdl, job)
-            except OperationalError as err:
+            except (OperationalError, InternalError) as err:
                 # Automatically retry the typical transaction serialization
                 # errors
-                if err.pgcode not in PG_CONCURRENCY_ERRORS_TO_RETRY:
+                if err.pgcode not in PG_CONCURRENCY_ERRORS_TO_RETRY and \
+                        err.pgcode not in PG_INTERNAL_ERRORS_TO_RETRY:
                     raise
 
                 retry_postpone(job, tools.ustr(err.pgerror, errors='replace'),
                                seconds=PG_RETRY)
-                _logger.debug('%s OperationalError, postponed', job)
+                _logger.debug(
+                    '%s OperationalError or InternalError, postponed', job)
 
         except NothingToDoJob as err:
             if unicode(err):
@@ -105,6 +113,7 @@ class RunJobController(http.Controller):
                 msg = None
             job.cancel(msg)
             with session_hdl.session() as session:
+                clear_env(session.env)
                 self.job_storage_class(session).store(job)
 
         except RetryableJobError as err:
@@ -119,6 +128,7 @@ class RunJobController(http.Controller):
 
             job.set_failed(exc_info=buff.getvalue())
             with session_hdl.session() as session:
+                clear_env(session.env)
                 self.job_storage_class(session).store(job)
             raise
 

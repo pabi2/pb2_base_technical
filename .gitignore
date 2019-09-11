@@ -69,3 +69,4 @@ openerp-server.conf
 *.settings
 *.*~
 .~*
+/bin/

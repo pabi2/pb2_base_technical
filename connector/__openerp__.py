@@ -20,9 +20,9 @@
 ##############################################################################
 
 {'name': 'Connector',
- 'version': '8.0.3.3.0',
+ 'version': '8.0.3.4.0',
  'author': 'Camptocamp,Openerp Connector Core Editors,'
-           'Odoo Community Association (OCA)',
+           'Odoo Community Association (OCA), by Jakkrich Edition',
  'website': 'http://odoo-connector.com',
  'license': 'AGPL-3',
  'category': 'Generic Modules',
@@ -39,6 +39,7 @@
           'connector_menu.xml',
           'setting_view.xml',
           'res_partner_view.xml',
+          'queue/job_timeout_data.xml',
           ],
  'installable': True,
  'application': True,
