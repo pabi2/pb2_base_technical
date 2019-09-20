@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		# Form View
+		<record model="ir.ui.view" id="nstdaweb_docker_monitor_port_form_view">
+			<field name="name">nstdaweb.docker.monitor.port.form</field>
+			<field name="model">nstdaweb.docker.monitor.port</field>
+			<field name="arch" type="xml">
+				<form string="Ports">
+					<sheet>
+						<group>
+							<group>
+								<field name="source_id" options="{'m2o_dialog': false,'no_open': true}"/>
+								<field name="port" />
+								<field name="display_port" />
+								<field name="res_module" />
+								<field name="write_date" />
+								<field name="frequency" />
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		# Search View
+		<record model="ir.ui.view" id="nstdaweb_docker_monitor_port_search_view">
+			<field name="name">nstdaweb.docker.monitor.port.seach</field>
+			<field name="model">nstdaweb.docker.monitor.port</field>
+			<field name="arch" type="xml">
+				<search string="Ports">
+					<field name="source_id" />
+					<field name="port" />
+					<field name="res_module" />
+					<field name="write_date" />
+					<field name="frequency" />
+				</search>
+			</field>
+		</record>
+
+		# Tree View
+		<record model="ir.ui.view" id="nstdaweb_docker_monitor_port_tree_view">
+			<field name="name">nstdaweb.docker.monitor.port.tree</field>
+			<field name="model">nstdaweb.docker.monitor.port</field>
+			<field name="arch" type="xml">
+				<tree string="Ports">
+					<field name="source_id" />
+					<field name="port" invisible="1"/>
+					<field name="display_port" />
+					<field name="res_module" />
+					<field name="write_date" />
+					<field name="frequency" />
+				</tree>
+			</field>
+		</record>
+
+		# Window action
+		<record model="ir.actions.act_window" id="nstdaweb_docker_monitor_port_action">
+			<field name="name">Ports</field>
+			<field name="res_model">nstdaweb.docker.monitor.port</field>
+			<field name="domain">[]</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context" eval="{}" />
+		</record>
+	</data>
+</openerp>

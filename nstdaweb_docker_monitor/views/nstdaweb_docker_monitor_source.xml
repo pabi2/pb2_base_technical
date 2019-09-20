@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		# Form View
+		<record model="ir.ui.view" id="nstdaweb_docker_monitor_source_form_view">
+			<field name="name">nstdaweb.docker.monitor.source.form</field>
+			<field name="model">nstdaweb.docker.monitor.source</field>
+			<field name="arch" type="xml">
+				<form string="ประเภทข้อกำหนด">
+					<style>
+						.vou_box{
+						background-color:#F5F5F5;
+						padding:1px 20px;
+						border:
+						1px solid;
+						}
+					</style>
+					<header>
+						<button name="action_gen_port" string="Generate Port" type="object"
+							class="oe_highlight" confirm="Confirm to Generate Port?" attrs="{'invisible':[('id','=',False)]}" />
+						<button name="action_reset_api" string="Reset API" type="object"
+							class="oe_highlight" confirm="Confirm to Reset API?" attrs="{'invisible':[('id','=',False)]}" />
+					</header>
+					<sheet>
+						<div class="vou_box">
+							<group>
+								<group string="Info">
+									<field name="id" invisible="1" />
+									<field name="name" />
+									<field name="url" />
+								</group>
+								<group string="API">
+									<field name="api_key" />
+									<field name="api_secret" />
+								</group>
+							</group>
+						</div>
+						<br />
+						<div class="vou_box">
+							<group string="Port range">
+								<group>
+									<field name="port_min" />
+								</group>
+								<group>
+									<field name="port_max" />
+								</group>
+							</group>
+						</div>
+						<br />
+						<div class="vou_box">
+							<group string="Ports list"></group>
+							<field name="port_ids">
+								<tree create="0" edit="0">
+									<field name="display_status_code" />
+									<field name="display_last_use" />
+									<field name="port" invisible="1" />
+									<field name="display_port" readonly="1" />
+									<field name="res_module" readonly="1" />
+									<field name="write_date" readonly="1" />
+									<field name="frequency" readonly="1" />
+								</tree>
+							</field>
+						</div>
+						<br />
+						<div class="vou_box">
+							<br />
+							<span>สูตรการจัดการ Port เรียงตามลำดับความสำคัญ มากไปน้อย</span><br />
+							<span>* Module เดิม = [Port เดิม]</span><br />
+							<span>* Module ใหม่ = [Last login น้อยที่สุด] &gt; [Latest Call Port น้อยที่สุด] &gt; [Port น้อยที่สุด]</span><br />
+							<span>* Module Error = [Status = Error มากกว่า 1 วัน] &gt; [Latest Call Port น้อยที่สุด] &gt; [Port น้อยที่สุด]</span><br /><br />
+						</div>
+						<br />
+						<div class="vou_box">
+							<group string="Alert">
+								<group>
+									<field name="due_date" />
+								</group>
+								<group>
+									<field name="admin_ids" widget="many2many_tags"
+										options="{'m2o_dialog': false,'no_open': true}" />
+								</group>
+							</group>
+						</div>
+						<br />
+						<div class="vou_box">
+							<group string="Debug">
+								<group>
+									<field name="display_forecast_port" />
+									<field name="display_time_diff" />
+								</group>
+								<group></group>
+							</group>
+						</div>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		# Search View
+		<record model="ir.ui.view" id="nstdaweb_docker_monitor_source_search_view">
+			<field name="name">nstdaweb.docker.monitor.source.seach</field>
+			<field name="model">nstdaweb.docker.monitor.source</field>
+			<field name="arch" type="xml">
+				<search string="Source">
+					<field name="name" />
+					<field name="due_date" />
+					<field name="admin_ids" />
+					<field name="port_max" />
+					<field name="port_min" />
+				</search>
+			</field>
+		</record>
+
+		# Tree View
+		<record model="ir.ui.view" id="nstdaweb_docker_monitor_source_tree_view">
+			<field name="name">nstdaweb.docker.monitor.source.tree</field>
+			<field name="model">nstdaweb.docker.monitor.source</field>
+			<field name="arch" type="xml">
+				<tree string="Source">
+					<field name="name" />
+					<field name="port_max" />
+					<field name="port_min" />
+				</tree>
+			</field>
+		</record>
+
+		# Window action
+		<record model="ir.actions.act_window" id="nstdaweb_docker_monitor_source_action">
+			<field name="name">Source</field>
+			<field name="res_model">nstdaweb.docker.monitor.source</field>
+			<field name="domain">[]</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context" eval="{}" />
+		</record>
+	</data>
+</openerp>
