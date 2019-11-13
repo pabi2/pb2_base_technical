@@ -12,7 +12,12 @@ from .worker import WORKER_TIMEOUT
 from ..session import ConnectorSession
 from .worker import watcher
 from ..connector import get_openerp_module, is_module_installed
-
+from ..exception import (NoSuchJobError,
+                         NotReadableJobError,
+                         RetryableJobError,
+                         FailedJobError,
+                         NothingToDoJob)
+                         
 _logger = logging.getLogger(__name__)
 
 
@@ -31,10 +36,15 @@ class QueueJob(models.Model):
             for conf_list in conf_channels_list:
                 channel_name, channel_time = conf_list.split(":")
                 jobs = self.with_context(active_test=False).search(
-                    [('state', 'in', [ENQUEUED, STARTED])],
+                     [('state', 'in', [ENQUEUED, STARTED])],
                 )
+                session = ConnectorSession(self.env.cr,
+                                   self.env.uid,
+                                   context=self.env.context)
+                storage = OpenERPJobStorage(session)
                 _logger.info("[==Job Timeout==] Status in [ENQUEUED, STARTED], Len: %s job, Channel: %s" % (len(jobs), channel_name))
                 for job in jobs:
+                    job_storage = storage.load(job.uuid)
                     if job.channel == channel_name:
                         now = datetime.now()
                         str_now = datetime.strftime(now, "%Y-%m-%d %H:%M:%S")
@@ -47,22 +57,12 @@ class QueueJob(models.Model):
                             second_diff = (now-date_started).total_seconds()
                             if second_diff > int(channel_time):
                                 if job.retry < job.max_retries:
-                                    job.retry = job.retry + 1
-                                    job._change_job_state(PENDING, result=result)
+                                    job_storage.set_pending()
+                                    job_storage.retry = job_storage.retry + 1
+                                    _logger.info("[==Job Timeout==] job %s added retry+1 in channel %s (diff[%s] / channel[%s])", job.uuid, job.channel, second_diff, channel_time)
                                 else:
                                     result = _('Job Timeout more than %s s.' % channel_time)
-                                    job._change_job_state(FAILED, result=result)
+                                    job_storage.set_failed(exc_info=result)
                                     _logger.info("[==Job Timeout==] job %s marked failed in channel %s (diff[%s] / channel[%s])", job.uuid, job.channel, second_diff, channel_time)
-                            # else:
-                            #    if job.state == ENQUEUED:
-                            #        job._change_job_state(PENDING, result=result)
-                            #        _logger.info("[==Job Timeout==] job %s marked pending in channel %s HOOK TRIGGER!!! (diff[%s] / channel[%s])", job.uuid, job.channel, second_diff, channel_time)
-                            #    elif job.state == STARTED:
-                            #        _logger.info("[==Job Timeout==] job %s starting in channel %s WAITING!!! (diff[%s] / channel[%s])", job.uuid, job.channel, second_diff, channel_time)
-                        #else:
-                        #    job._change_job_state(PENDING, result=result)
-                        #    _logger.info("[==Job Timeout==] job %s ERROR!! Please check date_created IS NULL!!! ", job.uuid, job.channel)
-
-
-
+                    storage.store(job_storage)
         return True
