@@ -1,22 +1,17 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-# * mis_builder
+#	* mis_builder
 #
-# Translators:
-# OCA Transbot <transbot@odoo-community.org>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-16 12:25+0000\n"
-"PO-Revision-Date: 2016-12-16 12:25+0000\n"
-"Last-Translator: OCA Transbot <transbot@odoo-community.org>, 2016\n"
-"Language-Team: Italian (https://www.transifex.com/oca/teams/23907/it/)\n"
-"Language: it\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: \n"
 
 #. module: mis_builder
 #: code:addons/mis_builder/models/mis_builder.py:290
@@ -33,16 +28,12 @@ msgstr ""
 
 #. module: mis_builder
 #: view:mis.report:mis_builder.mis_report_view_form
-msgid ""
-"'accounts' is a comma-separated list of account codes, possibly containing % "
-"wildcards"
+msgid "'accounts' is a comma-separated list of account codes, possibly containing % wildcards"
 msgstr ""
 
 #. module: mis_builder
 #: view:mis.report:mis_builder.mis_report_view_form
-msgid ""
-"'domain' is an optional filter on move lines (eg to filter on analytic "
-"accounts or journal)"
+msgid "'domain' is an optional filter on move lines (eg to filter on analytic accounts or journal)"
 msgstr ""
 
 #. module: mis_builder
@@ -52,9 +43,7 @@ msgstr ""
 
 #. module: mis_builder
 #: view:mis.report:mis_builder.mis_report_view_form
-msgid ""
-"* bal[70]: variation of the balance of account 70 over the period (it is the "
-"same as balp[70]);"
+msgid "* bal[70]: variation of the balance of account 70 over the period (it is the same as balp[70]);"
 msgstr ""
 
 #. module: mis_builder
@@ -112,12 +101,12 @@ msgstr ""
 #. module: mis_builder
 #: selection:mis.report.instance,target_move:0
 msgid "All Entries"
-msgstr "Tutte le Registrazioni"
+msgstr ""
 
 #. module: mis_builder
 #: selection:mis.report.instance,target_move:0
 msgid "All Posted Entries"
-msgstr "Tutte le registrazioni Pubblicate"
+msgstr ""
 
 #. module: mis_builder
 #: code:addons/mis_builder/models/mis_builder.py:240
@@ -144,7 +133,7 @@ msgstr ""
 #. module: mis_builder
 #: field:mis.report.instance,company_id:0
 msgid "Company"
-msgstr "Azienda"
+msgstr ""
 
 #. module: mis_builder
 #: field:mis.report.instance.period,comparison_column_ids:0
@@ -158,17 +147,21 @@ msgstr ""
 
 #. module: mis_builder
 #: field:add.mis.report.instance.dashboard.wizard,create_uid:0
-#: field:mis.report,create_uid:0 field:mis.report.instance,create_uid:0
+#: field:mis.report,create_uid:0
+#: field:mis.report.instance,create_uid:0
 #: field:mis.report.instance.period,create_uid:0
-#: field:mis.report.kpi,create_uid:0 field:mis.report.query,create_uid:0
+#: field:mis.report.kpi,create_uid:0
+#: field:mis.report.query,create_uid:0
 msgid "Created by"
 msgstr ""
 
 #. module: mis_builder
 #: field:add.mis.report.instance.dashboard.wizard,create_date:0
-#: field:mis.report,create_date:0 field:mis.report.instance,create_date:0
+#: field:mis.report,create_date:0
+#: field:mis.report.instance,create_date:0
 #: field:mis.report.instance.period,create_date:0
-#: field:mis.report.kpi,create_date:0 field:mis.report.query,create_date:0
+#: field:mis.report.kpi,create_date:0
+#: field:mis.report.query,create_date:0
 msgid "Created on"
 msgstr ""
 
@@ -195,8 +188,10 @@ msgid "Default CSS style"
 msgstr ""
 
 #. module: mis_builder
-#: field:mis.report,description:0 field:mis.report.instance,description:0
-#: field:mis.report.instance.period,name:0 field:mis.report.kpi,description:0
+#: field:mis.report,description:0
+#: field:mis.report.instance,description:0
+#: field:mis.report.instance.period,name:0
+#: field:mis.report.kpi,description:0
 msgid "Description"
 msgstr ""
 
@@ -205,13 +200,15 @@ msgstr ""
 #: selection:mis.report.kpi,compare_method:0
 #, python-format
 msgid "Difference"
-msgstr "Differenze"
+msgstr ""
 
 #. module: mis_builder
 #: field:add.mis.report.instance.dashboard.wizard,display_name:0
-#: field:mis.report,display_name:0 field:mis.report.instance,display_name:0
+#: field:mis.report,display_name:0
+#: field:mis.report.instance,display_name:0
 #: field:mis.report.instance.period,display_name:0
-#: field:mis.report.kpi,display_name:0 field:mis.report.query,display_name:0
+#: field:mis.report.kpi,display_name:0
+#: field:mis.report.query,display_name:0
 #: field:report.mis_builder.report_mis_report_instance,display_name:0
 msgid "Display Name"
 msgstr ""
@@ -288,15 +285,19 @@ msgid "From period"
 msgstr ""
 
 #. module: mis_builder
-#: field:add.mis.report.instance.dashboard.wizard,id:0 field:mis.report,id:0
-#: field:mis.report.instance,id:0 field:mis.report.instance.period,id:0
-#: field:mis.report.kpi,id:0 field:mis.report.query,id:0
+#: field:add.mis.report.instance.dashboard.wizard,id:0
+#: field:mis.report,id:0
+#: field:mis.report.instance,id:0
+#: field:mis.report.instance.period,id:0
+#: field:mis.report.kpi,id:0
+#: field:mis.report.query,id:0
 #: field:report.mis_builder.report_mis_report_instance,id:0
 msgid "ID"
 msgstr ""
 
 #. module: mis_builder
-#: view:mis.report:mis_builder.mis_report_view_form field:mis.report,kpi_ids:0
+#: view:mis.report:mis_builder.mis_report_view_form
+#: field:mis.report,kpi_ids:0
 #: view:mis.report.instance:mis_builder.mis_report_instance_view_form
 msgid "KPI's"
 msgstr ""
@@ -308,26 +309,32 @@ msgstr ""
 
 #. module: mis_builder
 #: field:add.mis.report.instance.dashboard.wizard,__last_update:0
-#: field:mis.report,__last_update:0 field:mis.report.instance,__last_update:0
+#: field:mis.report,__last_update:0
+#: field:mis.report.instance,__last_update:0
 #: field:mis.report.instance.period,__last_update:0
-#: field:mis.report.kpi,__last_update:0 field:mis.report.query,__last_update:0
+#: field:mis.report.kpi,__last_update:0
+#: field:mis.report.query,__last_update:0
 #: field:report.mis_builder.report_mis_report_instance,__last_update:0
 msgid "Last Modified on"
 msgstr ""
 
 #. module: mis_builder
 #: field:add.mis.report.instance.dashboard.wizard,write_uid:0
-#: field:mis.report,write_uid:0 field:mis.report.instance,write_uid:0
+#: field:mis.report,write_uid:0
+#: field:mis.report.instance,write_uid:0
 #: field:mis.report.instance.period,write_uid:0
-#: field:mis.report.kpi,write_uid:0 field:mis.report.query,write_uid:0
+#: field:mis.report.kpi,write_uid:0
+#: field:mis.report.query,write_uid:0
 msgid "Last Updated by"
 msgstr ""
 
 #. module: mis_builder
 #: field:add.mis.report.instance.dashboard.wizard,write_date:0
-#: field:mis.report,write_date:0 field:mis.report.instance,write_date:0
+#: field:mis.report,write_date:0
+#: field:mis.report.instance,write_date:0
 #: field:mis.report.instance.period,write_date:0
-#: field:mis.report.kpi,write_date:0 field:mis.report.query,write_date:0
+#: field:mis.report.kpi,write_date:0
+#: field:mis.report.query,write_date:0
 msgid "Last Updated on"
 msgstr ""
 
@@ -408,7 +415,8 @@ msgstr ""
 #: field:add.mis.report.instance.dashboard.wizard,name:0
 #: field:mis.report,name:0
 #: view:mis.report.instance:mis_builder.mis_report_instance_view_form
-#: field:mis.report.instance,name:0 field:mis.report.kpi,name:0
+#: field:mis.report.instance,name:0
+#: field:mis.report.kpi,name:0
 #: field:mis.report.query,name:0
 msgid "Name"
 msgstr ""
@@ -445,7 +453,8 @@ msgstr ""
 #. module: mis_builder
 #: code:addons/mis_builder/models/mis_builder.py:77
 #: code:addons/mis_builder/models/mis_builder.py:93
-#: selection:mis.report.kpi,compare_method:0 selection:mis.report.kpi,type:0
+#: selection:mis.report.kpi,compare_method:0
+#: selection:mis.report.kpi,type:0
 #, python-format
 msgid "Percentage"
 msgstr ""
@@ -464,7 +473,7 @@ msgstr ""
 #: view:mis.report.instance:mis_builder.mis_report_instance_view_form
 #: field:mis.report.instance,period_ids:0
 msgid "Periods"
-msgstr "Periodi"
+msgstr ""
 
 #. module: mis_builder
 #: field:mis.report.instance,pivot_date:0
@@ -507,7 +516,8 @@ msgstr ""
 
 #. module: mis_builder
 #: model:ir.model,name:mis_builder.model_report
-#: field:mis.report.instance,report_id:0 field:mis.report.kpi,report_id:0
+#: field:mis.report.instance,report_id:0
+#: field:mis.report.kpi,report_id:0
 #: field:mis.report.query,report_id:0
 msgid "Report"
 msgstr ""
@@ -528,7 +538,8 @@ msgid "Rounding"
 msgstr ""
 
 #. module: mis_builder
-#: field:mis.report.instance.period,sequence:0 field:mis.report.kpi,sequence:0
+#: field:mis.report.instance.period,sequence:0
+#: field:mis.report.kpi,sequence:0
 msgid "Sequence"
 msgstr ""
 
@@ -561,7 +572,7 @@ msgstr ""
 #. module: mis_builder
 #: field:mis.report.instance,target_move:0
 msgid "Target Moves"
-msgstr "Registrazioni:"
+msgstr ""
 
 #. module: mis_builder
 #: model:mis.report,name:mis_builder.mis_report_test
@@ -643,3 +654,4 @@ msgstr ""
 #, python-format
 msgid "µ"
 msgstr ""
+
