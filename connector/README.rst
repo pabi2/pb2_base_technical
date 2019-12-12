@@ -54,14 +54,14 @@ also used with Solr, CMIS, ...
 	Ex. ``channels_time_real = root:3600,root.report:7200``
 
 * Fix Host Master PGpool (Jakkrich Edition)
-    
+
     Add variables ``host`` in openerp-server.conf after ``[options-connector]``
    
 * Add Feature Stop Worker Job Runner (Jakkrich Edition)
   
     Add variables ``stop_job_runner`` in openerp-server.conf after ``[options-connector]``
     Ex. ``stop_job_runner = True``
-    
+
 .. _Magento: http://odoo-magento-connector.com
 .. _Prestashop: https://github.com/OCA/connector-prestashop
 
@@ -104,3 +104,4 @@ This module is maintained by the OCA.
 OCA, or the Odoo Community Association, is a nonprofit organization whose mission is to support the collaborative development of Odoo features and promote its widespread use.
 
 To contribute to this module, please visit http://odoo-community.org.
+
