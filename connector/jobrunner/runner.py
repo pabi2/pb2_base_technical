@@ -300,6 +300,7 @@ class Database(object):
                     FOR EACH ROW EXECUTE PROCEDURE queue_job_notify();
             """)
             cr.execute("LISTEN connector")
+            _logger.info('===== LISTEN connector')
 
     def select_jobs(self, where, args):
         query = ("SELECT %s, uuid, id as seq, date_created, "
@@ -382,9 +383,12 @@ class ConnectorRunner(object):
                 notification = db.conn.notifies.pop()
                 uuid = notification.payload
                 job_datas = db.select_jobs('uuid = %s', (uuid,))
+                _logger.info('===== Got NOTIFY TRIGGER :: pid=%s, channel=%s, payload=%s =====' % (notification.pid, notification.channel, notification.payload))
                 if job_datas:
+                    _logger.info(job_datas[0])
                     self.channel_manager.notify(db.db_name, *job_datas[0])
                 else:
+                    _logger.info('===== Got NOTIFY TRIGGER :: job remove=%s =====' % (uuid))
                     self.channel_manager.remove_job(uuid)
 
     def wait_notification(self):
@@ -398,6 +402,7 @@ class ConnectorRunner(object):
         if conns and not self._stop:
             for conn in conns:
                 conn.poll()
+
 
     def stop(self):
         _logger.info("graceful stop requested")
