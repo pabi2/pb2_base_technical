@@ -776,8 +776,8 @@ class MisReportInstance(models.Model):
             'name': 'MIS report instance XLS report',
             'model': 'mis.report.instance',
             'type': 'ir.actions.report.xml',
-            'report_name': 'mis.report.instance.xls',
-            'report_type': 'xls',
+            'report_name': 'mis_report_instance_xlsx',
+            'report_type': 'xlsx',
             'context': self.env.context,
         }
 
