@@ -372,7 +372,7 @@ class MisReport(models.Model):
     def _compute(self, lang_id, aep,
                  date_from, date_to,
                  period_from, period_to,
-                 target_move,
+                 target_move, period_special,
                  get_additional_move_line_filter=None,
                  get_additional_query_filter=None,
                  period_id=None):
@@ -435,7 +435,7 @@ class MisReport(models.Model):
             additional_move_line_filter = get_additional_move_line_filter()
         aep.do_queries(date_from, date_to,
                        period_from, period_to,
-                       target_move,
+                       target_move, period_special,
                        additional_move_line_filter)
 
         compute_queue = self.kpi_ids
@@ -652,7 +652,7 @@ class MisReportInstancePeriod(models.Model):
                 expr,
                 self.date_from, self.date_to,
                 self.period_from, self.period_to,
-                self.report_instance_id.target_move)
+                self.report_instance_id.target_move, self.period_special)
             domain.extend(self._get_additional_move_line_filter())
             return {
                 'name': expr + ' - ' + self.name,
@@ -675,6 +675,7 @@ class MisReportInstancePeriod(models.Model):
             self.date_from, self.date_to,
             self.period_from, self.period_to,
             self.report_instance_id.target_move,
+            self.period_special,
             self._get_additional_move_line_filter,
             self._get_additional_query_filter,
             period_id=self.id,
