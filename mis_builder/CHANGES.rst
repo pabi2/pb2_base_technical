@@ -6,6 +6,18 @@ Changelog
 .. 
 .. * 
 
+8.0.1.0.2 (2017-12-29)
+~~~~~~~~~~~~~~~~~~~~~~
+
+* Fix another get_pdf() bug
+  (`#63 <https://github.com/OCA/mis-builder/pull/63>`_)
+
+8.0.1.0.1 (2017-12-05)
+~~~~~~~~~~~~~~~~~~~~~~
+
+* Fix API version bug with get_pdf()
+  (`#61 <https://github.com/OCA/mis-builder/pull/61>`_)
+
 8.0.1.0.0 (2016-04-27)
 ~~~~~~~~~~~~~~~~~~~~~~
 

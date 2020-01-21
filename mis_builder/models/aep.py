@@ -170,7 +170,7 @@ class AccountingExpressionProcessor(object):
     def get_aml_domain_for_expr(self, expr,
                                 date_from, date_to,
                                 period_from, period_to,
-                                target_move):
+                                target_move, period_special):
         """ Get a domain on account.move.line for an expression.
 
         Prerequisite: done_parsing() must have been invoked.
@@ -187,15 +187,16 @@ class AccountingExpressionProcessor(object):
                 account_ids.update(self._account_ids_by_code[account_code])
             aml_domain.append(('account_id', 'in', tuple(account_ids)))
             if field == 'crd':
-                aml_domain.append(('credit', '>', 0))
+                aml_domain.append(('credit', '<>', 0.0))
             elif field == 'deb':
-                aml_domain.append(('debit', '>', 0))
+                aml_domain.append(('debit', '<>', 0.0))
             aml_domains.append(expression.normalize_domain(aml_domain))
             if mode not in date_domain_by_mode:
                 date_domain_by_mode[mode] = \
                     self.get_aml_domain_for_dates(date_from, date_to,
                                                   period_from, period_to,
-                                                  mode, target_move)
+                                                  mode, target_move,
+                                                  period_special)
         return expression.OR(aml_domains) + \
             expression.OR(date_domain_by_mode.values())
 
@@ -203,6 +204,10 @@ class AccountingExpressionProcessor(object):
         move_model = self.env['account.move']
         return bool(move_model.search([('period_id', '=', period.id)],
                                       limit=1))
+
+    def _period_special_has_moves(self, period):
+        move_model = self.env['account.move']
+        return bool(move_model.search([('period_id', 'in', period.ids)]))
 
     def _get_previous_opening_period(self, period, company_id):
         period_model = self.env['account.period']
@@ -213,6 +218,15 @@ class AccountingExpressionProcessor(object):
             order="date_start desc",
             limit=1)
         return periods and periods[0]
+
+    def _get_close_period(self, period, company_id):
+        period_model = self.env['account.period']
+        periods = period_model.search(
+            [('date_stop', '=', period.date_stop),
+             ('special', '=', True),
+             ('company_id', '=', company_id)],
+            order="date_stop")
+        return periods
 
     def _get_previous_normal_period(self, period, company_id):
         period_model = self.env['account.period']
@@ -253,7 +267,8 @@ class AccountingExpressionProcessor(object):
              ('special', '=', False)])
         return set([p.company_id.id for p in periods])
 
-    def _get_period_ids_for_mode(self, period_from, period_to, mode):
+    def _get_period_ids_for_mode(self, period_from, period_to,
+                                 mode, period_special):
         assert not period_from.special
         assert not period_to.special
         assert period_from.company_id == period_to.company_id
@@ -288,15 +303,22 @@ class AccountingExpressionProcessor(object):
                 if period_to:
                     period_ids.extend(self._get_period_ids_between(
                         period_from, period_to, company_id))
+
+            # PABI case special close period
+            if period_special:
+                close_period = self._get_close_period(period_to, company_id)
+                if close_period and \
+                        self._period_special_has_moves(close_period):
+                    period_ids.extend(close_period.ids)
         return period_ids
 
     def get_aml_domain_for_dates(self, date_from, date_to,
                                  period_from, period_to,
                                  mode,
-                                 target_move):
+                                 target_move, period_special):
         if period_from and period_to:
             period_ids = self._get_period_ids_for_mode(
-                period_from, period_to, mode)
+                period_from, period_to, mode, period_special)
             domain = [('period_id', 'in', period_ids)]
         else:
             if mode == MODE_VARIATION:
@@ -309,7 +331,7 @@ class AccountingExpressionProcessor(object):
         return expression.normalize_domain(domain)
 
     def do_queries(self, date_from, date_to, period_from, period_to,
-                   target_move, additional_move_line_filter=None):
+                   target_move, period_special, additional_move_line_filter=None):
         """Query sums of debit and credit for all accounts and domains
         used in expressions.
 
@@ -325,7 +347,8 @@ class AccountingExpressionProcessor(object):
                 domain_by_mode[mode] = \
                     self.get_aml_domain_for_dates(date_from, date_to,
                                                   period_from, period_to,
-                                                  mode, target_move)
+                                                  mode, target_move,
+                                                  period_special)
             domain = list(domain) + domain_by_mode[mode]
             domain.append(('account_id', 'in', self._map_account_ids[key]))
             if additional_move_line_filter:
