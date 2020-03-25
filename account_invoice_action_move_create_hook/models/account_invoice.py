@@ -73,10 +73,10 @@ class AccountInvoice(models.Model):
         """ Overwrite currency rate IN instead INV """
         total = 0
         total_currency = 0
+        in_transfer_date = self._context.get('in_transfer_date', False)
         for line in invoice_move_lines:
             if self.currency_id != company_currency:
                 # Check inv from clear_prepaid or there is IN Transfer already
-                in_transfer_date = self._context.get('in_transfer_date', False)
                 if in_transfer_date:
                     currency = self.currency_id.with_context(
                         date=self._context.get(
@@ -205,6 +205,7 @@ class AccountInvoice(models.Model):
             total, total_currency, iml = inv.with_context(ctx).\
                 compute_invoice_totals(company_currency, ref, iml)
             name = inv.supplier_invoice_number or inv.name or '/'
+            journal = inv._get_journal_hook(ctx)
             totlines = []
             if inv.payment_term:
                 totlines = inv.with_context(ctx).\
@@ -222,7 +223,17 @@ class AccountInvoice(models.Model):
                     res_amount_currency -= amount_currency or 0
                     if i + 1 == len(totlines):
                         amount_currency += res_amount_currency
-
+                    total_ait = sum([i['price']for i in iml])
+                    profit_loss_id = journal.clear_prepaid_profit_loss.id
+                    if total_ait != abs(t[1]):
+                        iml.append({
+                            'type': 'dest',
+                            'name': journal.clear_prepaid_profit_loss.name,
+                            'price': round(t[1] + total_ait, 2) * -1,
+                            'account_id': profit_loss_id or False,
+                            'date_maturity': inv.date_due or t[0],
+                            'ref': ref,
+                        })
                     iml.append({
                         'type': 'dest',
                         'name': name,
@@ -256,7 +267,7 @@ class AccountInvoice(models.Model):
             line = inv.group_lines(iml, line)
 
             # HOOK
-            journal = inv._get_journal_hook(ctx)
+            # journal = inv._get_journal_hook(ctx)
             if journal.centralisation:
                 raise except_orm(
                     _('User Error!'),
@@ -264,6 +275,8 @@ class AccountInvoice(models.Model):
                       'Uncheck the centralized counterpart box in the related '
                       'journal from the configuration menu.'))
             line = inv.finalize_invoice_move_lines(line)
+            # create ag/a
+            line = [self.line_get_ag_a(l, journal) for l in line]
             move_vals = {
                 'ref': inv.reference or inv.name,
                 'line_id': line,
@@ -292,7 +305,6 @@ class AccountInvoice(models.Model):
                 'period_id': period.id,
                 'move_name': move.name,
             }
-
             inv.with_context(ctx).write(vals)
             # Pass invoice in context in method post:
             # used if you want to get the same
@@ -328,6 +340,13 @@ class AccountInvoice(models.Model):
             'product_uom_id': line.get('uos_id', False),
             'analytic_account_id': line.get('account_analytic_id', False),
         }
+
+    @api.multi
+    def line_get_ag_a(self, line, journal):
+        if line[2].get('account_id') == journal.clear_prepaid_profit_loss.id:
+            line[2]['activity_group_id'] = journal.clear_prepaid_ag.id
+            line[2]['activity_id'] = journal.clear_prepaid_activity.id
+        return line
 
 
 class AccountInvoiceLine(models.Model):
