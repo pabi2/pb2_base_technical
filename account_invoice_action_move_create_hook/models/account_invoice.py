@@ -219,18 +219,18 @@ class AccountInvoice(models.Model):
                             compute(t[1], inv.currency_id)
                     else:
                         amount_currency = False
-                    # last line: add the diff
+                    # last line: add the diff and prepaid only
                     res_amount_currency -= amount_currency or 0
                     if i + 1 == len(totlines):
                         amount_currency += res_amount_currency
                     total_ait = sum([i['price']for i in iml])
-                    profit_loss_id = journal.clear_prepaid_profit_loss.id
-                    if total_ait != abs(t[1]):
+                    profit_loss = journal.clear_prepaid_profit_loss
+                    if profit_loss and total_ait != abs(t[1]):
                         iml.append({
                             'type': 'dest',
                             'name': journal.clear_prepaid_profit_loss.name,
                             'price': round(t[1] + total_ait, 2) * -1,
-                            'account_id': profit_loss_id or False,
+                            'account_id': profit_loss.id,
                             'date_maturity': inv.date_due or t[0],
                             'ref': ref,
                         })
