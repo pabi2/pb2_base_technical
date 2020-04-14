@@ -31,9 +31,7 @@
                 <tbody>
                   <tr t-foreach="docs_computed[o.id]['content']" t-as="c">
                     <td t-att-style="c_value['default_style']">
-                      <div class="text-left">
                         <t t-esc="c_value['kpi_name']"/>
-                      </div>
                     </td>
                     <t t-foreach="c_value['cols']" t-as="value">
                       <td t-att-style="c_value['default_style']">
