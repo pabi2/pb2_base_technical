@@ -75,6 +75,7 @@ class AccountInvoice(models.Model):
         total_currency = 0
         in_transfer_date = self._context.get('in_transfer_date', False)
         for line in invoice_move_lines:
+            price_bf_convert = line['price']
             if self.currency_id != company_currency:
                 # Check inv from clear_prepaid or there is IN Transfer already
                 if in_transfer_date:
@@ -103,7 +104,6 @@ class AccountInvoice(models.Model):
             else:
                 # For case clear prepaid only, Convert total = old price
                 if in_transfer_date and self._context.get('is_clear_prepaid'):
-                    price_bf_convert = line['price']
                     currency = self.currency_id.with_context(
                         date=self.date_invoice or
                         fields.Date.context_today(self))
