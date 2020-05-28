@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from openerp.models import BaseModel
 from openerp import api, models, _
+import re
+
 
 @api.v7
 def copy_translations(self, cr, uid, old_id, new_id, context=None):
@@ -29,11 +31,50 @@ class IRTranslation(models.Model):
                                         ('name','=',name),
                                         ('type','=','model'),
                                         ('res_id', '=', res_id)])
+            
             if trans_search and lang_code == context['lang']:
                 trans_search.with_context(context).\
                     write({'value': data[field_name]})
             elif trans_search and lang_code != context['lang']:
                 trans_search.with_context(context).\
-                    write({'source': data[field_name]})
+                    write({'src': data[field_name], 'source': data[field_name]})
+            
+            trans_search = self.search([('lang','=','th_TH'),
+                                            ('name','=',name),
+                                            ('type','=','model'),
+                                            ('res_id', '=', res_id)])
+            trans_src = trans_search.src.replace(" ", "")
+            trans_value = trans_search.value.replace(" ", "")
+            pattern = re.compile(r"[a-zA-Z]")
+            char_name = re.findall(pattern, data[field_name].replace(" ", ""))
+            char_src = re.findall(pattern, trans_src)
+            char_value = re.findall(pattern, trans_value)
+            
+            if trans_search and context['lang'] == 'th_TH' and not char_name:
+                trans_search.with_context(lang="th_TH").\
+                    write({
+                        'value': data[field_name]
+                    })
+            if trans_search and context['lang'] == 'th_TH' and not char_name and not char_src:
+                trans_search.with_context(lang="en_US").\
+                    write({
+                        'src': data[field_name],
+                        'source': data[field_name]
+                    })
+            if trans_search and context['lang'] == 'th_TH' and char_name and char_src and char_value:
+                trans_search.with_context(lang="en_US").\
+                    write({
+                        'src': data[field_name],
+                        'source': data[field_name],
+                        'value': data[field_name]
+                    })
+            if trans_search and context['lang'] == 'en_US' and char_name and char_src and char_value:
+                trans_search.with_context(lang="en_US").\
+                    write({
+                        'src': data[field_name],
+                        'source': data[field_name],
+                        'value': data[field_name]
+                    })
+
         return True
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
