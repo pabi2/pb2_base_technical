@@ -1,0 +1,3 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_nstdaweb_docker_monitor_source_root,nstdaweb_docker_monitor_source_root,model_nstdaweb_docker_monitor_source,base.user_root,1,1,1,1
+access_nstdaweb_docker_monitor_port_root,nstdaweb_docker_monitor_port_root,model_nstdaweb_docker_monitor_port,base.user_root,1,1,1,1
