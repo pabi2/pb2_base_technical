@@ -36,12 +36,28 @@ class AccountInvoice(models.Model):
 
                 # Check case IN -> INV used date IN.
                 in_transfer_date = self._context.get('in_transfer_date', False)
+                wa_date = self._context.get('wa_date', False)
                 if in_transfer_date:
                     currency = \
                         self.currency_id.with_context(date=in_transfer_date)
                     il['analytic_lines'] = [(0, 0, {
                         'name': il['name'],
                         'date': in_transfer_date,
+                        'account_id': il['account_analytic_id'],
+                        'unit_amount': il['quantity'],
+                        'amount': currency.compute(il['price'], company_currency) * sign,
+                        'product_id': il['product_id'],
+                        'product_uom_id': il['uos_id'],
+                        'general_account_id': il['account_id'],
+                        'journal_id': self.journal_id.analytic_journal_id.id,
+                        'ref': ref,
+                    })]
+                elif wa_date:
+                    currency = \
+                        self.currency_id.with_context(date=wa_date)
+                    il['analytic_lines'] = [(0, 0, {
+                        'name': il['name'],
+                        'date': wa_date,
                         'account_id': il['account_analytic_id'],
                         'unit_amount': il['quantity'],
                         'amount': currency.compute(il['price'], company_currency) * sign,
@@ -74,14 +90,18 @@ class AccountInvoice(models.Model):
         total = 0
         total_currency = 0
         in_transfer_date = self._context.get('in_transfer_date', False)
+        wa_date = self._context.get('wa_date', False)
         for line in invoice_move_lines:
             price_bf_convert = line['price']
             if self.currency_id != company_currency:
                 # Check inv from clear_prepaid or there is IN Transfer already
                 if in_transfer_date:
                     currency = self.currency_id.with_context(
-                        date=self._context.get(
-                            'in_transfer_date', self.date_invoice) or
+                        date=in_transfer_date or self.date_invoice or
+                        fields.Date.context_today(self))
+                elif wa_date:
+                    currency = self.currency_id.with_context(
+                        date=wa_date or self.date_invoice or
                         fields.Date.context_today(self))
                 else:
                     currency = self.currency_id.with_context(
@@ -122,6 +142,7 @@ class AccountInvoice(models.Model):
         account_invoice_tax = self.env['account.invoice.tax']
         account_move = self.env['account.move']
         stock_move = self.env['stock.move']
+        work_acceptance = self.env['purchase.work.acceptance']
 
         for inv in self:
             if not inv.journal_id.sequence_id:
@@ -147,7 +168,15 @@ class AccountInvoice(models.Model):
                     stock_move_id.date, DEFAULT_SERVER_DATETIME_FORMAT
                     ).strftime('%Y-%m-%d')
                 ctx.update({'in_transfer_date': ctx_date})
-
+            # check not prepaid INV used Acceptance Date
+            elif not inv.is_prepaid and inv.source_document_id and \
+                    inv.source_document_id._name == 'purchase.order':
+                wa_id = work_acceptance.search([
+                    ('order_id', '=', inv.source_document_id.id),
+                    ('state', '!=', 'cancel')
+                ], order='id desc', limit=1)
+                if wa_id:
+                    ctx.update({'wa_date': wa_id.date_accept})
             if not inv.date_invoice:
                 inv.with_context(ctx).write({
                     'date_invoice': fields.Date.context_today(self)})
