@@ -1,6 +1,21 @@
+.openerp .oe_form_field_translatable > input,
+.openerp .oe_form .oe_form_required .oe_translation_field > input {
+  # pointer-events:none !important;
+  # background: #E5E5E5 !important;
+}
+
 .openerp .oe_translation_field {
   width: 95%;
 }
+
 .openerp .oe_translation_field.touched {
   border: 1px solid green !important;
+}
+
+.openerp .oe_form .oe_input_icon{
+  margin: 3px 0 0 3px !important;
+}
+
+.openerp .oe_form .oe_form_field_char input{
+  width: calc(100% - 24px) !important;
 }
