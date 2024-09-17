@@ -4,3 +4,7 @@
 .openerp .oe_translation_field.touched {
   border: 1px solid green !important;
 }
+
+.openerp .oe_form input[type="text"], .openerp .oe_form input[type="password"], .openerp .oe_form input[type="file"], .openerp .oe_form select, .openerp .oe_form textarea{
+  padding-right: 24px;
+}
